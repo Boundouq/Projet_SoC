@@ -1,5 +1,5 @@
-`ifndef ALU
-`define ALU
+`ifndef alu
+`define alu
 
 
 `define R_type 7'b0110011
@@ -17,6 +17,8 @@ module alu(
   input [31:0] rs2_value_in,
   input [31:0] imm_value_in,
   input [31:0] pc_co_in,
+
+  output wire non_zero_out,
 
   output reg [31:0] result_out
   );
@@ -102,6 +104,9 @@ module alu(
 
       endcase
     end
+
+    assign non_zero_out = |result_out;
+
 endmodule
 
 
