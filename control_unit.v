@@ -1,15 +1,15 @@
+`ifndef control_unit
+`define control_unit
 
 
-
-`include "alu.v"
 `include "opcodes.v"
 `include "imm.v"
 
-/*
+
 `define R_type 7'b0110011
 `define I_type_op 7'b0010011 //I_type operation
 `define I_type_ld 7'b0000011 //I_type load
-*/
+
 
 
 
@@ -26,7 +26,7 @@ module control_unit (
     output reg [2:0] alu_sub_sra_out,
     output reg [3:0] alu_src1_out,            //type src1 (reg)
     output reg [3:0] alu_src2_out,           // type src2 (reg, imm ...)
-    output reg rd_write_out,
+    output reg rd_write_out
 
   );
 
@@ -233,3 +233,4 @@ module control_unit (
              endcase
          end
      endmodule
+`endif

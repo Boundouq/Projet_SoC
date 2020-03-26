@@ -53,7 +53,8 @@ module alu(
             `R_type:  begin
                       src1 = rs1_value_in;
                       src2 = rs2_value_in;
-            `I_type_op , `I_type_ld:  begin
+                      end
+            `I_type_op: begin
                                       src1 = rs1_value_in;
                                       src2 = imm_value_in;
                                       end
@@ -84,23 +85,23 @@ module alu(
             3'b100: result_out = src1 ^ src2;   //xor
             3'b110: result_out = src1 | src2;   //or
             3'b111: result_out = src1 & src2;   //and
-            3'b001: result_out = src1 << scr2;  //sll
+            3'b001: result_out = src1 << src2;  //sll
             3'b101: result_out = srl_sra;       //srl or sla
             3'b010: result_out = {31'b0, lt};   //slt
             3'b011: result_out = {31'b0, ltu};  //sltu
-          endcase ;
+          endcase
 
-        `I_type_ld:
+        `I_type_op:
           case (funct3)
             3'b000: result_out = add_sub[31:0]; //addi  (fonct7 = 0)
             3'b100: result_out = src1 ^ src2;   //xori
             3'b110: result_out = src1 | src2;   //ori
             3'b111: result_out = src1 & src2;   //andi
-            3'b001: result_out = src1 << scr2;  //slli
+            3'b001: result_out = src1 << src2;  //slli
             3'b101: result_out = srl_sra;       //srli or srai
             3'b010: result_out = {31'b0, lt};   //slti
             3'b011: result_out = {31'b0, ltu};  //sltiu
-          endcase ;
+          endcase
 
       endcase
     end

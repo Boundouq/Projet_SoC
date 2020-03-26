@@ -3,7 +3,6 @@
 
 module regs(
   input req,
-  input ack,
   input rs_read,
 
   input [4:0] rs1_in,
@@ -26,7 +25,8 @@ module regs(
       end
   endgenerate
 
-  always @(posedge req , negedge ack) begin
+  always @(posedge req)
+  begin
       if (!rs_read) begin
           rs1_value_out <= regs[rs1_in];
           rs2_value_out <= regs[rs2_in];
@@ -34,8 +34,7 @@ module regs(
 
       if (!rd_write_in)
           regs[rd_in] <= rd_value_in;
-      end
-    end
+  end
 endmodule
 
 `endif

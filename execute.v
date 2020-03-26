@@ -1,7 +1,6 @@
 `ifndef execute
 `define execute
 
-`include "alu.v"
 
 module execute(
   input req,
@@ -18,17 +17,18 @@ module execute(
   input [31:0] rs2_value_in,
   input [31:0] imm_value_in,
   input [31:0] pc_co_in,
+  //
+  output reg rd_write,
+  //
 
   output reg alu_non_zero_out,
 
   output reg [31:0] result_out
-  )
+  );
 
   reg [31:0] rs1_value;
   reg [31:0] rs2_value;
 
-  rs1_value = rs1_value_in;
-  rs2_value = rs2_value_in;
 
   reg alu_non_zero;
   reg [31:0] alu_result;
@@ -38,8 +38,8 @@ module execute(
     .funct3(alu_funct3),
     .funct7(alu_funct7),
 
-    .rs1_value_in(rs1_value),
-    .rs2_value_in(rs2_value),
+    .rs1_value_in(rs1_value_in),
+    .rs2_value_in(rs2_value_in),
     .imm_value_in(imm_value_in),
     .pc_co_in(pc_co_in),
 
@@ -50,6 +50,7 @@ module execute(
       if(!stall_in) begin
       alu_non_zero_out <= alu_non_zero;
       result_out <= alu_result;
+      rd_write <= 1'b0;
       end
     end
 endmodule

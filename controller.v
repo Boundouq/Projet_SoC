@@ -9,7 +9,7 @@ module controller(
   input set,
 
   output reg req_i1,
-  output logic ack_i
+  output reg ack_i
   );
 
   always @* begin
@@ -19,9 +19,9 @@ module controller(
     if (req_i == !ack_i1 == 0)      req_i1 = 0;
     if (req_i == !ack_i1 == 1)      req_i1 = 1;
 
-  end
+    ack_i = req_i1;
 
-  ack_i  = req_i1;
+  end
 
 endmodule
 

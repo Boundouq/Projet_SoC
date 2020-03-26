@@ -1,13 +1,11 @@
 `ifndef DECODE
 `define DECODE
 
-`include "control_unit.v"
-`include "regs.v"
+
 
 module decode (
 
    input req,
-   input ack,
    input rs_read,
 
    input [4:0] rd_in,
@@ -50,7 +48,7 @@ module decode (
     wire [6:0] funct7;
 
     assign rs2 = instr_in[24:20];
-    assign rs1 = instr_in[15:19];
+    assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
 
     assign funct3 = instr_in[14:12];
