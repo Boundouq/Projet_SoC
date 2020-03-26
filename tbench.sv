@@ -62,13 +62,13 @@ execute exec (
   .result_out(rd)
   );
 
-  initial 
+  initial
 	begin
     $timeformat(-9, 1, "ns", 12);
   	end
 
 
-  `define PERIODE 20
+  `define PERIODE 40
 
   always
     #(`PERIODE/2) req =~ req;
@@ -82,14 +82,13 @@ execute exec (
 
   end
 
-  initial forever
-   begin
+  initial begin
    @(posedge req)
-      {reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx;
-      {reset, instr } = 33'b0_0000000_00001_00001_000_00001_0010011;
-      {reset, instr } = 33'b0_0000000_00001_00001_000_00010_0110011;
+      {reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
+      {reset, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO");
+      {reset, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO");
 
       $display ("TESTE PASSED");
-   
+
   end
 endmodule

@@ -76,7 +76,7 @@ module decode (
     reg valid;
     wire rs1_read;
     wire rs2_read;
-    reg [4:0] imm;
+    reg [6:0] imm;
     reg [6:0] alu_op;
     reg alu_sub_sra;
     reg [2:0] alu_src1;

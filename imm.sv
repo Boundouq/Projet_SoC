@@ -1,11 +1,11 @@
 `ifndef IMM
 `define IMM
 
-`define IMM_I     6'b000000
+`define I_type_op 7'b0010011 //I_type operation
 
 
 module immediat (
-    input [4:0] imm_in,
+    input [6:0] imm_in,
 
     input [31:0] instr_in,
 
@@ -18,7 +18,7 @@ module immediat (
 
     always @* begin
         case (imm_in)
-            `IMM_I:     imm_value_out = imm_i;
+            `I_type_op:     imm_value_out = imm_i;
 
         endcase
     end
