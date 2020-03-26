@@ -3,7 +3,7 @@
 
 `include "alu.v"
 `include "opcodes.v"
-
+`include "imm.v"
 
 /*
 `define R_type 7'b0110011
@@ -21,10 +21,11 @@ module control_unit (
     output reg valid_out,
     output reg rs1_read_out,
     output reg rs2_read_out,
+    output reg [4:0] imm_out,
     output reg [6:0] alu_op_out,
     output reg [2:0] alu_sub_sra_out,
-    output reg [3:0] alu_src1_out,            //type src1 (reg, imm ...)
-    output reg [3:0] alu_src2_out,           // type src2
+    output reg [3:0] alu_src1_out,            //type src1 (reg)
+    output reg [3:0] alu_src2_out,           // type src2 (reg, imm ...)
     output reg rd_write_out,
 
   );
@@ -35,6 +36,7 @@ module control_unit (
       valid_out = 0;
       rs1_read_out = 0;
       rs2_read_out = 0;
+      imm_out = 8'bx;
       alu_op_out = 7'bx;
       alu_sub_sra_out = 2'bx;
       alu_src1_out = 4'bx;
@@ -46,6 +48,7 @@ module control_unit (
   `INSTR_ADDI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0000;
@@ -55,6 +58,7 @@ module control_unit (
   `INSTR_SLTI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_sub_sra_out = 1;
                  alu_src1_out = 4'b0000;
@@ -64,6 +68,7 @@ module control_unit (
   `INSTR_SLTIU: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_sub_sra_out = 1;
                  alu_src1_out = 4'b0000;
@@ -73,6 +78,7 @@ module control_unit (
   `INSTR_XORI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_src1_out = 4'b0000;
                  alu_src2_out = 4'b0101;
@@ -81,6 +87,7 @@ module control_unit (
   `INSTR_ORI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_src1_out = 4'b0000;
                  alu_src2_out = 4'b0101;
@@ -89,6 +96,7 @@ module control_unit (
   `INSTR_ANDI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_src1_out = 4'b0000;
                  alu_src2_out = 4'b0101;
@@ -97,6 +105,7 @@ module control_unit (
   `INSTR_SLLI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_src1_out = 4'b0000;
                  alu_src2_out = 4'b0101;
@@ -105,6 +114,7 @@ module control_unit (
   `INSTR_SRLI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0000;
@@ -114,6 +124,7 @@ module control_unit (
   `INSTR_SRAI: begin
                  valid_out = 1;
                  rs1_read_out = 1;
+                 imm_out = `IMM_I;
                  alu_op_out = `I_type_op;
                  alu_sub_sra_out = 1;
                  alu_src1_out = 4'b0000;
