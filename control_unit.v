@@ -21,7 +21,7 @@ module control_unit (
     output reg valid_out,
     output reg rs1_read_out,
     output reg rs2_read_out,
-    output reg [4:0] imm_out,
+    output reg [5:0] imm_out,
     output reg [6:0] alu_op_out,
     output reg [2:0] alu_sub_sra_out,
     output reg [3:0] alu_src1_out,            //type src1 (reg)
@@ -36,7 +36,7 @@ module control_unit (
       valid_out = 0;
       rs1_read_out = 0;
       rs2_read_out = 0;
-      imm_out = 8'bx;
+      imm_out = 6'bx;
       alu_op_out = 7'bx;
       alu_sub_sra_out = 2'bx;
       alu_src1_out = 4'bx;
