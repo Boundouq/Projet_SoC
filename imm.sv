@@ -19,7 +19,7 @@ module immediat (
     always @* begin
         case (imm_in)
             `IMM_I:     imm_value_out = imm_i;
-            
+
         endcase
     end
 endmodule

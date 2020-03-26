@@ -33,7 +33,7 @@ module alu(
   wire [4:0] shift;
   //wire [6:0] fct_imm;
 
-  // la sortie des opreration add sub srl sra en R_type et I_type
+  // la sortie des oprerations add sub srl sra en R_type et I_type
   wire [31:0] srl_sra;
   wire [32:0] add_sub;
   // definition d'une variable qui modelise le fait qu'on a funct7 = 0x20
@@ -68,7 +68,7 @@ module alu(
   assign shift = src2[4:0];
 
   assign add_sub = sub_or_sra ? src1 + src2 : src1 - src2;
-  assign srl_sra = (opcode_in == `R_type)? ($signed({sub_sra_in ? 1'b1 : src1_sign , src1}) >>> src2) : ($signed({sub_sra_in ? 1'b1 : src1_sign , src1}) >>> shift);
+  assign srl_sra = (opcode_in == `R_type)? ($signed({sub_or_sra ? 1'b1 : src1_sign , src1}) >>> src2) : ($signed({sub_or_sra ? 1'b1 : src1_sign , src1}) >>> shift);
 
   assign carry = add_sub[32];
   assign sign  = add_sub[31];

@@ -1,10 +1,10 @@
 module tbench;
 
-//timeunit  1ns;
-//timeprecision 1ns;
+timeunit  1ns;
+timeprecision 1ns;
 
-logic req ;
-logic reset ;
+  bit req = 1'b0;
+  bit reset = 1'b1;
 
 logic [31:0] instr, rd, rs1, rs2, imm, pc;
 logic [2:0] funct3;
@@ -60,14 +60,13 @@ execute exec (
   .alu_non_zero_out(alu_non_zero_out),
 
   .result_out(rd)
-  )
+  );
 
-  initial begin
+  initial 
+	begin
     $timeformat(-9, 1, "ns", 12);
-  end
+  	end
 
-  req = 1'b0;
-  reset = 1'b1;
 
   `define PERIODE 20
 
@@ -86,11 +85,11 @@ execute exec (
   initial forever
    begin
    @(posedge req)
-      {reset, inst } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx;
-      {reset, inst } = 33'b0_0000000_00001_00001_000_00001_0010011;
-      {reset, inst } = 33'b0_0000000_00001_00001_000_00010_0110011;
+      {reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx;
+      {reset, instr } = 33'b0_0000000_00001_00001_000_00001_0010011;
+      {reset, instr } = 33'b0_0000000_00001_00001_000_00010_0110011;
 
-      $display ("TESTE PASSED")
+      $display ("TESTE PASSED");
       $finish;
   end
 endmodule
