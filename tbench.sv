@@ -15,7 +15,7 @@ logic rs_read, rd_write_in,rs1_read_unreg_out,rs2_read_unreg_out,valid_out,alu_s
 decode deco(
   .req(req),
   .rs_read(rs_read),
-  .rd_in(rd_out),
+  .rd_in(rd_in),
   .rd_write_in(rd_write_in),
   .instr_in(instr),
   .rd_value_in(rd),
@@ -56,6 +56,8 @@ execute exec (
   .imm_value_in(imm),
   .pc_co_in(imm),
 
+  .rd_in(rd_out),
+  .rd_out(rd_in),
   .rd_write(rd_write_in),
   .alu_non_zero_out(alu_non_zero_out),
 
@@ -75,17 +77,16 @@ execute exec (
 
 
 
-  always @ (posedge req ) begin
-    if(!reset) begin
+  always @ (posedge req, negedge reset ) begin
       rs_read = 1'b0;
-    end
-
   end
 
   initial begin
-   @(posedge req)
-      {reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
+   @(posedge req, negedge reset)
+      //{reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
       {reset, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO");
+      {reset, instr } = 33'b0_0000000_00001_00011_000_00011_0010011; @(posedge req) $display ("HELLO");
+      {reset, instr } = 33'b0_0000000_00001_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
       {reset, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO");
 
       $display ("TESTE PASSED");

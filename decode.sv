@@ -1,7 +1,9 @@
 `ifndef DECODE
 `define DECODE
 
-
+`define R_type 7'b0110011
+`define I_type_op 7'b0010011 //I_type operation
+`define I_type_ld 7'b0000011 //I_type load
 
 module decode (
 
@@ -40,14 +42,15 @@ module decode (
 
 );
 
-    wire [4:0] rs2;
+    logic [4:0] rs2;
     wire [4:0] rs1;
     wire [4:0] rd;
 
     wire [2:0] funct3;
     wire [6:0] funct7;
-
-    assign rs2 = instr_in[24:20];
+    always @ ( * ) begin
+      if (instr_in[6:0] == `R_type) rs2 = instr_in[24:20];
+    end
     assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
 
@@ -114,7 +117,7 @@ module decode (
         .imm_value_out(imm_value)
     );
 
-    always @(req) begin
+    always_ff @(posedge req) begin
         if (!rs_read) begin
 
             valid_out <= valid;
