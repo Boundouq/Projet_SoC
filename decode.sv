@@ -61,6 +61,8 @@ module decode (
     assign rs1_unreg_out = rs1;
     assign rs2_unreg_out = rs2;
 
+    reg [31:0] rs1_v_out;
+    reg [31:0] rs2_v_out;
 
     regs regs (
         .req(req),
@@ -72,8 +74,8 @@ module decode (
 
         .rd_value_in(rd_value_in),
 
-        .rs1_value_out(rs1_value_out),
-        .rs2_value_out(rs2_value_out)
+        .rs1_value_out(rs1_v_out),
+        .rs2_value_out(rs2_v_out)
     );
 
     reg valid;
@@ -129,6 +131,8 @@ module decode (
             alu_src2_out <= alu_src2;
             rd_out <= rd;
             rd_write_out <= rd_write;
+            rs1_value_out <= rs1_v_out;
+            rs2_value_out <= rs2_v_out;
 
             imm_value_out <= imm_value;
             funct3_out <= funct3;
