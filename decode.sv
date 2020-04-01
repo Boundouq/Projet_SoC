@@ -12,10 +12,13 @@ module decode (
 
    input [4:0] rd_in,
    input rd_write_in,
+   input [31:0] rd_value_in,
 
    input [31:0] instr_in,
-
-   input [31:0] rd_value_in,
+   //
+   input [31:0] pc_in_dec,
+   output [31:0] pc_out_dec,
+   //
 
    output wire [4:0] rs1_unreg_out,
    output wire rs1_read_unreg_out,

@@ -1,7 +1,9 @@
 `ifndef DECODE
 `define DECODE
 
-
+`define R_type 7'b0110011
+`define I_type_op 7'b0010011 //I_type operation
+`define I_type_ld 7'b0000011 //I_type load
 
 module decode (
 
@@ -10,10 +12,13 @@ module decode (
 
    input [4:0] rd_in,
    input rd_write_in,
+   input [31:0] rd_value_in,
 
    input [31:0] instr_in,
-
-   input [31:0] rd_value_in,
+   //
+   input [31:0] pc_in_dec;
+   output [31:0] pc_out_dec;
+   //
 
    output wire [4:0] rs1_unreg_out,
    output wire rs1_read_unreg_out,
@@ -40,14 +45,15 @@ module decode (
 
 );
 
-    wire [4:0] rs2;
+    logic [4:0] rs2;
     wire [4:0] rs1;
     wire [4:0] rd;
 
     wire [2:0] funct3;
     wire [6:0] funct7;
-
-    assign rs2 = instr_in[24:20];
+    always @ ( * ) begin
+      if (instr_in[6:0] == `R_type) rs2 = instr_in[24:20];
+    end
     assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
 
@@ -58,6 +64,8 @@ module decode (
     assign rs1_unreg_out = rs1;
     assign rs2_unreg_out = rs2;
 
+    reg [31:0] rs1_v_out;
+    reg [31:0] rs2_v_out;
 
     regs regs (
         .req(req),
@@ -69,14 +77,14 @@ module decode (
 
         .rd_value_in(rd_value_in),
 
-        .rs1_value_out(rs1_value_out),
-        .rs2_value_out(rs2_value_out)
+        .rs1_value_out(rs1_v_out),
+        .rs2_value_out(rs2_v_out)
     );
 
     reg valid;
     wire rs1_read;
     wire rs2_read;
-    reg [4:0] imm;
+    reg [6:0] imm;
     reg [6:0] alu_op;
     reg alu_sub_sra;
     reg [2:0] alu_src1;
@@ -105,7 +113,7 @@ module decode (
 
     reg [31:0] imm_value;
 
-    immmediat immediat (
+    immediat immediat (
 
         .imm_in(imm),
 
@@ -114,7 +122,7 @@ module decode (
         .imm_value_out(imm_value)
     );
 
-    always @(req) begin
+    always_ff @(posedge req) begin
         if (!rs_read) begin
 
             valid_out <= valid;
@@ -126,6 +134,8 @@ module decode (
             alu_src2_out <= alu_src2;
             rd_out <= rd;
             rd_write_out <= rd_write;
+            rs1_value_out <= rs1_v_out;
+            rs2_value_out <= rs2_v_out;
 
             imm_value_out <= imm_value;
             funct3_out <= funct3;
