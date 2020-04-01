@@ -6,10 +6,16 @@ module ctrl(
   output reg req_2,
   output reg req_3
   );
+
+  timeunit  1ns;
+  timeprecision 1ns;
+
   logic ack_0;
   logic ack_1;
   logic ack_2;
   logic ack_3;
+
+
 
 
 

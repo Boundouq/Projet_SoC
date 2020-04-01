@@ -25,27 +25,27 @@ ctrl ctrl(
 
 
 fetch fetch(
-.req(req),
+  .req(req_0),
 
-.instr_rvalid_in(instr_rvalid_in),
-.gnt_in(gnt_in),
-.instr_rdata_in(instr),
+  .instr_rvalid_in(instr_rvalid_in),
+  .gnt_in(gnt_in),
+  .instr_rdata_in(instr),
 
-.branch_mispredicted_in(br),
+  .branch_mispredicted_in(br),
 
 
-.instr_req_out(instr_req_out),
-.instr_addr_out(instr_addr_out),
-.instr_read_out(rs_read),
-.instr_out(instr_out),
-.pc_out(pc)
-);
+  .instr_req_out(instr_req_out),
+  .instr_addr_out(instr_addr_out),
+  .instr_read_out(rs_read),
+  .instr_out(instr_out),
+  .pc_out(pc)
+  );
 
 
 
 
 decode deco(
-  .req(req),
+  .req(req_1),
   .rs_read(!rs_read),
   .rd_in(rd_in),
   .rd_write_in(rd_write_in),
@@ -106,24 +106,25 @@ execute exec (
   	end
 
 
-  `define PERIODE 40
+/*  `define PERIODE 40
 
   always
     #(`PERIODE/2) req =~ req;
 
-
-  always @ (posedge req, negedge reset ) begin
+*/
+  always @ (posedge req_0, negedge reset ) begin
       gnt_in = 1'b1;
       instr_rvalid_in = 1'b1;
   end
 
   initial begin
-   @(posedge req)
-      {reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00011_00011_000_00011_0010011; @(posedge req) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO");
+   @(posedge req_0)
+      {reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
+      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00001_0010011; @(posedge req_0) $display ("HELLO"); //R1 + 1 -> R1
+      {reset, br, instr } = 34'b0_0_0000000_00011_00011_000_00011_0010011; @(posedge req_0) $display ("HELLO"); //R3 + 3 -> R3
+      //{reset, br, instr } = 34'b0_0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
+      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00010_0110011; @(posedge req_0) $display ("HELLO"); //R1 + R1 -> R2
+
 
       $display ("TESTE PASSED");
 

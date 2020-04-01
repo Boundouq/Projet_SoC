@@ -40,6 +40,8 @@ module execute(
     rd_write = 1'b0;
     result_out = alu_result;
     rd_out = rd_in;
+    alu_non_zero_out <= alu_non_zero;
+
     end
   end
   alu alu(
@@ -55,12 +57,12 @@ module execute(
     .result_out(alu_result)
     );
 
-    always @(posedge req) begin
+  /*  always @(posedge req) begin
       if(!stall_in) begin
       alu_non_zero_out <= alu_non_zero;
 
       end
-    end
+    end*/
 endmodule
 
 `endif
