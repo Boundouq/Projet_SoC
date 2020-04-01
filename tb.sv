@@ -5,7 +5,6 @@ timeprecision 1ns;
 
 bit reset = 1'b0;
 reg req_0,req_1,req_2,req_3;
-reg ack_0,ack_1,ack_2,ack_3;
 bit data;
 
 

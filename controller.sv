@@ -21,8 +21,8 @@ module controller(
       if (req_i)      ack_i <= 1;
       if (ack_i1)      req_i1 <= 0;
       if (!req_i)      ack_i <= 0;
-      if (req_i == ack_i1) begin       req_i1 = req_i & (!ack_i1);ack_i = req_i1; end
-      if (req_i != ack_i1) begin       req_i1 = req_i;ack_i = req_i1; end
+      if (req_i != ack_i1) begin       req_i1 = req_i & (!ack_i1);ack_i = req_i1; end
+      if (req_i == ack_i1) begin       req_i1 = req_i;ack_i = req_i1; end
 
 
     end
