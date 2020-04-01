@@ -25,7 +25,7 @@ module regs(
       end
   endgenerate
 
-  always @(negedge req)
+  always @(posedge req)
   begin
       if (!rs_read) begin
           rs1_value_out <= regs[rs1_in];

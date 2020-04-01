@@ -121,6 +121,11 @@ module decode (
 
         .imm_value_out(imm_value)
     );
+    always @ ( * ) begin
+    rs1_value_out = rs1_v_out;
+    rs2_value_out = rs2_v_out;
+
+    end
 
     always_ff @(posedge req) begin
         if (!rs_read) begin
@@ -134,8 +139,6 @@ module decode (
             alu_src2_out <= alu_src2;
             rd_out <= rd;
             rd_write_out <= rd_write;
-            rs1_value_out <= rs1_v_out;
-            rs2_value_out <= rs2_v_out;
 
             imm_value_out <= imm_value;
             funct3_out <= funct3;

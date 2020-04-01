@@ -35,12 +35,13 @@ module execute(
   reg alu_non_zero;
   reg [31:0] alu_result;
 
-  /*always @ * begin
-  if(!stall_in) begin
-
-
+  always @ * begin
+    if(!stall_in) begin
+    rd_write = 1'b0;
+    result_out = alu_result;
+    rd_out = rd_in;
+    end
   end
-  end*/
   alu alu(
     .opcode_in(alu_opcode_in),
     .funct3(alu_funct3),
@@ -54,12 +55,10 @@ module execute(
     .result_out(alu_result)
     );
 
-    always @ (posedge req) begin
+    always @(posedge req) begin
       if(!stall_in) begin
       alu_non_zero_out <= alu_non_zero;
-      rd_write <= 1'b0;
-      result_out <= alu_result;
-      rd_out <= rd_in;
+
       end
     end
 endmodule
