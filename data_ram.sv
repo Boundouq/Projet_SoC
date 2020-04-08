@@ -1,0 +1,69 @@
+`define WORD 4'b0001
+`define HALF 4'b001_?
+`define BYTE 4'b1_???
+
+module data_ram (
+    input req,
+
+    input [31:0] data_add_in,//
+    input data_we_in,//
+    input [3:0] data_be_in,//
+    input [31:0] data_wdata_in,//
+    input data_req_in,
+
+    output data_gnt_o,
+    output data_rvalid,//
+    output wire [31:0] data_rdata_o //
+
+);
+    reg [31:0] mem [7999:0];
+    reg [31:0] read_value;
+
+    assign data_rdata_o = data_we_in ? 0 : read_value;
+
+    always @(posedge req) begin
+
+      read_value = 0;
+      data_rvalid = 0;
+      data_gnt_o = 0;
+
+      if (data_req_in) begin
+        data_gnt_o <= 1;
+        if (data_add_in[31:16] == 16'h0010) begin
+          read_value <= {mem[data_add_in[15:0]][7:0], mem[data_add_in[15:0]][15:8], mem[data_add_in[15:0]][23:16], mem[data_add_in[15:0]][31:24]};
+          data_rvalid <= 1'b1;
+        end
+        if (data_we_in) begin
+          case (data_be_in)
+            //word
+            `WORD:  begin mem[data_add_in[15:0]][7:0] = data_wdata_in[31:24];
+                          mem[data_add_in[15:0]][15:8] = data_wdata_in[23:16];
+                          mem[data_add_in[15:0]][23:16] = data_wdata_in[15:8];
+                          mem[data_add_in[15:0]][31:24] = data_wdata_in[7:0];
+                    end
+            //half_word
+            `HALF:  begin
+                        case (data_be_in)
+                          4'b0010:  begin
+                                    mem[data_add_in[15:0]][7:0] = data_wdata_in[31:24];
+                                    mem[data_add_in[15:0]][15:8] = data_wdata_in[23:16];
+                                    end
+                          4'b0011:  begin
+                                    mem[data_add_in[15:0]][23:16] = data_wdata_in[15:8];
+                                    mem[data_add_in[15:0]][31:24] = data_wdata_in[7:0];
+                                    end
+                          endcase
+                    end
+            `BYTE:  begin
+                        case (data_be_in)
+                          4'b1000:     mem[data_add_in[15:0]][31:24] = data_wdata_in[7:0];
+                          4'b1001:     mem[data_add_in[15:0]][23:16] = data_wdata_in[15:8];
+                          4'b1010:     mem[data_add_in[15:0]][15:8] = data_wdata_in[23:16];
+                          4'b1100:     mem[data_add_in[15:0]][7:0] = data_wdata_in[31:24];
+                        endcase
+                     end
+          endcase
+        end
+      end
+    end
+endmodule

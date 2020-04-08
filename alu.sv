@@ -4,7 +4,6 @@
 
 `define R_type 7'b0110011
 `define I_type_op 7'b0010011 //I_type operation
-`define I_type_ld 7'b0000011 //I_type load
 
 
 module alu(

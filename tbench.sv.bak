@@ -3,30 +3,40 @@ module tbench;
 timeunit  1ns;
 timeprecision 1ns;
 
-  bit req = 1'b0;
-  bit reset = 1'b1;
+bit req = 1'b0;
+bit reset = 1'b1;
 
 logic [31:0] instr,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
 logic [2:0] funct3;
 logic [6:0] funct7,opcode;
 logic [4:0] rd_in,rs1_unreg_out,rs2_unreg_out,rs1_out,rs2_out,rd_out;
-logic rs_read, rd_write_in,rs1_read_unreg_out,rs2_read_unreg_out,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
+logic br, rs_read, rd_write_in,rs1_read_unreg_out,rs2_read_unreg_out,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
+logic req_0, req_1, req_2,req_3;
 
+/*ctrl ctrl(
+  .reset(reset),
 
+  .req
+  );
+
+*/
 
 fetch fetch(
-.req(req),
+  .req(req),
 
-.instr_rvalid_in(instr_rvalid_in),
-.gnt_in(gnt_in),
-.instr_rdata_in(instr),
+  .instr_rvalid_in(instr_rvalid_in),
+  .gnt_in(gnt_in),
+  .instr_rdata_in(instr),
 
-.instr_req_out(instr_req_out),
-.instr_addr_out(instr_addr_out),
-.instr_read_out(rs_read),
-.instr_out(instr_out),
-.pc_out(pc)
-);
+  .branch_mispredicted_in(br),
+
+
+  .instr_req_out(instr_req_out),
+  .instr_addr_out(instr_addr_out),
+  .instr_read_out(rs_read),
+  .instr_out(instr_out),
+  .pc_out(pc)
+  );
 
 
 
@@ -39,8 +49,8 @@ decode deco(
   .instr_in(instr_out),
   .rd_value_in(rd),
 
-  .pc_in_dec(pc);
-  .pc_out_dec(pc_out);
+  .pc_in_dec(pc),
+  .pc_out_dec(pc_out),
 
   .rs1_unreg_out(rs1_unreg_out),
   .rs1_read_unreg_out(rs1_read_unreg_out),
@@ -99,22 +109,24 @@ execute exec (
     #(`PERIODE/2) req =~ req;
 
 
-
   always @ (posedge req, negedge reset ) begin
       gnt_in = 1'b1;
       instr_rvalid_in = 1'b1;
-
   end
 
   initial begin
-   @(posedge req, negedge reset)
-      //{reset, instr } = 33'b1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
-      {reset, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO");
-      {reset, instr } = 33'b0_0000000_00001_00011_000_00011_0010011; @(posedge req) $display ("HELLO");
-      {reset, instr } = 33'b0_0000000_00001_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
-      {reset, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO");
+  #25 {reset} = 1'b0; $display("HELLO");
+   @(posedge req)
+      //{reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
+      {br, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO"); //R1 + 1 -> R1
+      {br, instr } = 33'b0_0000000_00011_00011_000_00011_0010011; @(posedge req) $display ("HELLO"); //R3 + 3 -> R3
+      {br, instr } = 33'b0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
+      {br, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO"); //R1 + R1 -> R2
+      {br, instr } = 33'b0_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
+
+
 
       $display ("TESTE PASSED");
-
+      $stop;
   end
 endmodule
