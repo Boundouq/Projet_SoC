@@ -3,7 +3,7 @@ module tb;
 timeunit  1ns;
 timeprecision 1ns;
 
-bit reset = 1'b0;
+bit reset = 1'b1;
 reg req_0,req_1,req_2,req_3;
 bit data;
 
@@ -26,7 +26,7 @@ bit data;
         data = 1'b1;
     end*/
 
-    #100 {reset} = 1'b1; $display("HELLO");
+    #100 {reset} = 1'b0; $display("HELLO");
 
 
     #100

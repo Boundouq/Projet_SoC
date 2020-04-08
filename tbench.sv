@@ -3,7 +3,7 @@ module tbench;
 timeunit  1ns;
 timeprecision 1ns;
 
-bit req = 1'b1;
+logic [3:0] req ;
 bit reset = 1'b1;
 
 logic [31:0] instr,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
@@ -16,16 +16,13 @@ logic req_0, req_1, req_2,req_3;
 ctrl ctrl(
   .reset(reset),
 
-  .req_0(req_0),
-  .req_1(req_1),
-  .req_2(req_2),
-  .req_3(req_3)
+  .req
   );
 
 
 
 fetch fetch(
-  .req(req_0),
+  .req(req[0]),
 
   .instr_rvalid_in(instr_rvalid_in),
   .gnt_in(gnt_in),
@@ -45,7 +42,7 @@ fetch fetch(
 
 
 decode deco(
-  .req(req_1),
+  .req(req[1]),
   .rs_read(!rs_read),
   .rd_in(rd_in),
   .rd_write_in(rd_write_in),
@@ -77,7 +74,7 @@ decode deco(
   );
 
 execute exec (
-  .req(req),
+  .req(req[2]),
 
   .stall_in(~valid_out),
 
@@ -112,18 +109,19 @@ execute exec (
     #(`PERIODE/2) req =~ req;
 
 */
-  always @ (posedge req_0, negedge reset ) begin
+  always @ (posedge req[0], negedge reset ) begin
       gnt_in = 1'b1;
       instr_rvalid_in = 1'b1;
   end
 
   initial begin
-   @(posedge req_0)
-      {reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00001_0010011; @(posedge req_0) $display ("HELLO"); //R1 + 1 -> R1
-      {reset, br, instr } = 34'b0_0_0000000_00011_00011_000_00011_0010011; @(posedge req_0) $display ("HELLO"); //R3 + 3 -> R3
-      //{reset, br, instr } = 34'b0_0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
-      {reset, br, instr } = 34'b0_0_0000000_00001_00001_000_00010_0110011; @(posedge req_0) $display ("HELLO"); //R1 + R1 -> R2
+  #25 {reset} = 1'b0; $display("HELLO");
+   @(posedge req[0])
+      //{reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
+      {br, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req[0]) $display ("HELLO"); //R1 + 1 -> R1
+      {br, instr } = 33'b0_0000000_00011_00011_000_00011_0010011; @(posedge req[0]) $display ("HELLO"); //R3 + 3 -> R3
+      {br, instr } = 33'b0_0000000_00100_00100_000_00100_0010011; @(posedge req[0]) $display ("HELLO");
+      {br, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req[0]) $display ("HELLO"); //R1 + R1 -> R2
 
 
       $display ("TESTE PASSED");
