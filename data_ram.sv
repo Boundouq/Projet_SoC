@@ -11,8 +11,8 @@ module data_ram (
     input [31:0] data_wdata_in,//
     input data_req_in,
 
-    output data_gnt_o,
-    output data_rvalid,//
+    output reg data_gnt_o,
+    output reg data_rvalid,//
     output wire [31:0] data_rdata_o //
 
 );

@@ -17,8 +17,8 @@ module lsu(
   output reg [31:0] data_add_o,//
   output reg [31:0] data_wdata_o,//
   output reg [3:0] data_be_o,//
-  output data_we_o,//
-  output data_req_o,//
+  output reg data_we_o,//
+  output reg data_req_o,//
   //
 
   output reg rd_write,//
@@ -75,29 +75,31 @@ module lsu(
                                 endcase
                                 end
                     endcase
-                    red_write = 0;
+                    rd_write = 0;
           end
         end
 
-        `S_type:
+        `S_type:  begin
           data_we_o = 1;
           case (funct3)
             3'b000:   begin
                       case (add)
-                            0:  data_be_o = 4b'1000;
-                            1:  data_be_o = 4b'1001;
-                            2:  data_be_o = 4b'1010;
-                            3:  data_be_o = 4b'1100;
+                            0:  data_be_o = 4'b1000;
+                            1:  data_be_o = 4'b1001;
+                            2:  data_be_o = 4'b1010;
+                            3:  data_be_o = 4'b1100;
                       endcase
                       end
             3'b001:   begin
                       case (add)
-                            0:  data_be_o = 4b'0010;
-                            2:  data_be_o = 4b'0011;
+                            0:  data_be_o = 4'b0010;
+                            2:  data_be_o = 4'b0011;
                       endcase
                       end
-            3'b010:   data_be_o = 4b'0001;
+            3'b010:   data_be_o = 4'b0001;
           endcase
+        end
       endcase
     end
   end
+endmodule

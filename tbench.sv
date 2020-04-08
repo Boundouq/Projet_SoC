@@ -20,6 +20,7 @@ logic req_0, req_1, req_2,req_3;
   );
 
 */
+instr_read inst ();
 
 fetch fetch(
   .req(req),
@@ -127,6 +128,6 @@ execute exec (
 
 
       $display ("TESTE PASSED");
-      
+
   end
 endmodule
