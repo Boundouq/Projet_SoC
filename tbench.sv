@@ -9,9 +9,11 @@ bit reset = 1'b1;
 logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
 logic [2:0] funct3;
 logic [6:0] funct7,opcode;
-logic [4:0] rd_in,rs1_unreg_out,rs2_unreg_out,rd_out;
-logic br, rs_read, rd_write_in,rs1_read_unreg_out,rs2_read_unreg_out,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
+logic [4:0] rd_in,rd_out;
+logic br, rs_read, rd_write_in,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
 logic req_0, req_1, req_2,req_3;
+logic branch_pc_src_out, branch_out, branch_in;
+logic [3:0] branch_op_out;
 
 /*ctrl ctrl(
   .reset(reset),
@@ -70,6 +72,7 @@ fetch fetch(
 
 decode deco(
   .req(req),
+  .reset(reset)
   .rs_read(!rs_read),
   .rd_in(rd_in),
   .rd_write_in(rd_write_in),
@@ -78,11 +81,8 @@ decode deco(
 
   .pc_in_dec(pc),
   .pc_out_dec(pc_out),
+  .branch_in(branch_in),
 
-  .rs1_unreg_out(rs1_unreg_out),
-  .rs1_read_unreg_out(rs1_read_unreg_out),
-  .rs2_unreg_out(rs2_unreg_out),
-  .rs2_read_unreg_out(rs2_read_unreg_out),
   .valid_out(valid_out),
   .funct3_out(funct3),        //needed in ALU
   .funct7_out(funct7),       //needed in ALU
@@ -93,7 +93,9 @@ decode deco(
   .rs1_value_out(rs1),           //needed in ALU
   .rs2_value_out(rs2),          //needed in ALU
   .imm_value_out(imm)          //needed in ALU
-
+  .branch_op_out(branch_op_out),
+  .branch_pc_src_out(branch_pc_src_out),
+  .branch_out(branch_out)
   );
 
 execute exec (

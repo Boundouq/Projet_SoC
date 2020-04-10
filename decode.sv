@@ -13,7 +13,7 @@ module decode (
 
    input req,
    input reset,
-   input branch_predicted_taken_in,
+   input branch_in,
    input rs_read,
 
    input [4:0] rd_in,
@@ -21,24 +21,14 @@ module decode (
    input [31:0] rd_value_in,
 
    input [31:0] instr_in,
-   //
+
    input [31:0] pc_in_dec,
    output [31:0] pc_out_dec,
-   //
 
-   output wire [4:0] rs1_unreg_out,
-   output wire rs1_read_unreg_out,
-   output wire [4:0] rs2_unreg_out,
-   output wire rs2_read_unreg_out,
-
-   output reg mem_read_out,
-   output reg mem_write_out,
-   output reg [3:0] mem_width_out,
-   output reg mem_zero_extend_out,
 
    output reg [3:0] branch_op_out,
    output reg branch_pc_src_out,
-   output reg branch_predicted_taken_out,
+   output reg branch_out,
 
    output reg valid_out,
    output reg [2:0] funct3_out,        //needed in ALU
@@ -71,8 +61,7 @@ module decode (
     assign funct7 = instr_in[31:25];
 
 
-    assign rs1_unreg_out = rs1;
-    assign rs2_unreg_out = rs2;
+
 
     reg [31:0] rs1_v_out;
     reg [31:0] rs2_v_out;
@@ -109,8 +98,7 @@ module decode (
     reg [3:0] branch_op;
     reg branch_pc_src;
 
-    assign rs1_read_unreg_out = rs1_read;
-    assign rs2_read_unreg_out = rs2_read;
+
 
     control_unit control_unit (
 
@@ -164,14 +152,10 @@ module decode (
             imm_value_out <= imm_value;
             funct3_out <= funct3;
             funct7_out <= funct7;
-            mem_read_out <= mem_read;
-            mem_write_out <= mem_write;
-            mem_width_out <= mem_width;
-            mem_zero_extend_out <= mem_zero_extend;
             branch_op_out <= branch_op;
             branch_pc_src_out <= branch_pc_src;
 
-            branch_predicted_taken_out <= branch_predicted_taken_in;
+            branch_out <= branch_in;
 
             if (reset) begin
                    valid_out <= 0;
