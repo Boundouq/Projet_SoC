@@ -26,7 +26,7 @@ assign pc = branch_mispredicted_in ? 32'b0 : next_pc;
 
 
 reg [31:0] branch_offset;
-assign branch_offset = 6'b110001;
+assign branch_offset = 1'b1;
 
 
 always @ (*) begin

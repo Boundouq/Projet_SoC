@@ -6,7 +6,7 @@ timeprecision 1ns;
 bit req = 1'b0;
 bit reset = 1'b1;
 
-logic [31:0] instr,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
+logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
 logic [2:0] funct3;
 logic [6:0] funct7,opcode;
 logic [4:0] rd_in,rs1_unreg_out,rs2_unreg_out,rs1_out,rs2_out,rd_out;
@@ -20,14 +20,40 @@ logic req_0, req_1, req_2,req_3;
   );
 
 */
-instr_read inst ();
+// read_file
+  integer file;
+  reg [31:0] inst_mem [8000:0];
+
+  initial begin
+       file = $fopen("C:/Users/bound/Desktop/ETUDE/Projet/Projet_Riscy/Projet_SoC/instr.txt", "r");
+       if (file == 0) begin
+         $display("instr_file handle was NULL");
+        // $finish;
+       end
+  	   $readmemb("C:/Users/bound/Desktop/ETUDE/Projet/Projet_Riscy/Projet_SoC/instr.txt" ,inst_mem);
+       $fclose(file); // Close file before finish
+  end
+  //
+
+instr_ram instr(
+
+  //input req,
+  .instr_req_in(instr_req_out),
+  .instr_addr_in(instr_addr_out),
+  .inst_mem (inst_mem),
+
+
+  .instr_rvalid_o(instr_rvalid_in),
+  .instr_gnt_o(gnt_in),
+  .instr_rinstr_o(instr_in)
+  );
 
 fetch fetch(
   .req(req),
 
   .instr_rvalid_in(instr_rvalid_in),
   .gnt_in(gnt_in),
-  .instr_rdata_in(instr),
+  .instr_rdata_in(instr_in),
 
   .branch_mispredicted_in(br),
 
@@ -111,19 +137,21 @@ execute exec (
 
 
   always @ (posedge req, negedge reset ) begin
-      gnt_in = 1'b1;
-      instr_rvalid_in = 1'b1;
+      instr_req_out = 1'b1;
   end
 
   initial begin
   #25 {reset} = 1'b0; $display("HELLO");
    @(posedge req)
+      br = 1'b1 ;@(posedge req) $display ("HELLO");
+      br = 1'b0 ;@(posedge req) $display ("HELLO");
+
       //{reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
-      {br, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO"); //R1 + 1 -> R1
-      {br, instr } = 33'b0_0000000_00011_00011_000_00011_0010011; @(posedge req) $display ("HELLO"); //R3 + 3 -> R3
-      {br, instr } = 33'b0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
-      {br, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO"); //R1 + R1 -> R2
-      {br, instr } = 33'b0_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
+      //{br, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO"); //R1 + 1 -> R1
+      //{br, instr } = 33'b0_0000000_00011_00011_000_00011_0010011; @(posedge req) $display ("HELLO"); //R3 + 3 -> R3
+      //{br, instr } = 33'b0_0000000_00100_00100_000_00100_0010011; @(posedge req) $display ("HELLO");
+      //{br, instr } = 33'b0_0000000_00001_00001_000_00010_0110011; @(posedge req) $display ("HELLO"); //R1 + R1 -> R2
+      //{br, instr } = 33'b0_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req) $display ("HELLO");
 
 
 
