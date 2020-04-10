@@ -9,7 +9,7 @@ bit reset = 1'b1;
 logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
 logic [2:0] funct3;
 logic [6:0] funct7,opcode;
-logic [4:0] rd_in,rs1_unreg_out,rs2_unreg_out,rs1_out,rs2_out,rd_out;
+logic [4:0] rd_in,rs1_unreg_out,rs2_unreg_out,rd_out;
 logic br, rs_read, rd_write_in,rs1_read_unreg_out,rs2_read_unreg_out,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
 logic req_0, req_1, req_2,req_3;
 
@@ -84,14 +84,10 @@ decode deco(
   .rs2_unreg_out(rs2_unreg_out),
   .rs2_read_unreg_out(rs2_read_unreg_out),
   .valid_out(valid_out),
-  .rs1_out(rs1_out),
-  .rs2_out(rs2_out),
   .funct3_out(funct3),        //needed in ALU
   .funct7_out(funct7),       //needed in ALU
   .alu_op_out(opcode),
   .alu_sub_sra_out(alu_sub_sra_out),
-  .alu_src1_out(alu_src1_out),
-  .alu_src2_out(alu_src2_out),
   .rd_out(rd_out),
   .rd_write_out(rd_write_out),
   .rs1_value_out(rs1),           //needed in ALU
