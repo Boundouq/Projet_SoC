@@ -22,8 +22,8 @@
 `define BRANCH_OP_ALWAYS   4'b1111
 
 //type de branchement
-`define BRANCH_PC_SRC_IMM 2'b00 //branch sur imm
-`define BRANCH_PC_SRC_REG 2'b11 //branch sur registre
+`define BRANCH_PC_SRC_IMM 1'b0 //branch sur imm
+`define BRANCH_PC_SRC_REG 1'b1 //branch sur registre
 
 //MEMOIRE
 `define MEM_WIDTH_WORD 4'b0000
@@ -53,7 +53,7 @@ module control_unit
     output reg mem_zero_extend_out, // 1 si zero extends 0 sinon
 
     output reg [3:0] branch_op_out,
-    output reg [1:0] branch_pc_src_out
+    output reg branch_pc_src_out
 
   );
 
@@ -76,7 +76,7 @@ module control_unit
       mem_zero_extend_out = 1'bx;
 
       branch_op_out = `BRANCH_OP_NEVER
-      branch_pc_src_out = 2'bx;
+      branch_pc_src_out = 1'bx;
 
 
  casez (instr_in)
@@ -291,7 +291,7 @@ module control_unit
                  alu_op_out = `J_type;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0101; //PC
-                 alu_src2_out = 4'b1010; //FOUR
+                 alu_src2_out = 4'b1010; //4
                  branch_op_out = `BRANCH_OP_ALWAYS;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
                  rd_write_out = 1;
@@ -303,7 +303,7 @@ module control_unit
                  alu_op_out = `J_type;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0101; //PC
-                 alu_src2_out = 4'b1010; //FOUR
+                 alu_src2_out = 4'b1010; //4
                  branch_op_out = `BRANCH_OP_ALWAYS;
                  branch_pc_src_out = `BRANCH_PC_SRC_REG;
                  rd_write_out = 1;
@@ -332,7 +332,7 @@ module control_unit
                  branch_op_out = `BRANCH_OP_NON_ZERO;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
-             `INSTR_BLT: begin
+      `INSTR_BLT: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -344,7 +344,7 @@ module control_unit
                  branch_op_out = `BRANCH_OP_NON_ZERO;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
-             `INSTR_BGE: begin
+      `INSTR_BGE: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -356,7 +356,7 @@ module control_unit
                  branch_op_out = `BRANCH_OP_ZERO;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
-             `INSTR_BLTU: begin
+      `INSTR_BLTU: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -368,7 +368,7 @@ module control_unit
                  branch_op_out = `BRANCH_OP_NON_ZERO;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
-             `INSTR_BGEU: begin
+      `INSTR_BGEU: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -380,7 +380,7 @@ module control_unit
                  branch_op_out = `BRANCH_OP_ZERO;
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
-             `INSTR_LB: begin
+      `INSTR_LB: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  imm_out = `I_type_ld;
@@ -393,7 +393,7 @@ module control_unit
                  mem_zero_extend_out = 0;
                  rd_write_out = 1;
              end
-             `INSTR_LH: begin
+      `INSTR_LH: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  imm_out = `I_type_ld;
@@ -406,7 +406,7 @@ module control_unit
                  mem_zero_extend_out = 0;
                  rd_write_out = 1;
              end
-             `INSTR_LW: begin
+      `INSTR_LW: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  imm_out = `I_type_ld;
@@ -418,7 +418,7 @@ module control_unit
                  mem_width_out = `MEM_WIDTH_WORD;
                  rd_write_out = 1;
              end
-             `INSTR_LBU: begin
+      `INSTR_LBU: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  imm_out = `I_type_ld;
@@ -431,7 +431,7 @@ module control_unit
                  mem_zero_extend_out = 1;
                  rd_write_out = 1;
              end
-             `INSTR_LHU: begin
+      `INSTR_LHU: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  imm_out = `I_type_ld;
@@ -444,7 +444,7 @@ module control_unit
                  mem_zero_extend_out = 1;
                  rd_write_out = 1;
              end
-             `INSTR_SB: begin
+      `INSTR_SB: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -456,7 +456,7 @@ module control_unit
                  mem_write_out = 1;
                  mem_width_out = `MEM_WIDTH_BYTE;
              end
-             `INSTR_SH: begin
+      `INSTR_SH: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
@@ -468,7 +468,7 @@ module control_unit
                  mem_write_out = 1;
                  mem_width_out = `MEM_WIDTH_HALF;
              end
-             `INSTR_SW: begin
+      `INSTR_SW: begin
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;

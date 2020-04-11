@@ -14,6 +14,7 @@ logic br, rs_read, rd_write_in,valid_out,alu_sub_sra_out,rd_write_out,stall_in,a
 logic req_0, req_1, req_2,req_3;
 logic branch_pc_src_out, branch_out, branch_in;
 logic [3:0] branch_op_out;
+logic execute_branch_predicted_taken;
 
 /*ctrl ctrl(
   .reset(reset),
@@ -64,7 +65,8 @@ fetch fetch(
   .instr_addr_out(instr_addr_out),
   .instr_read_out(rs_read),
   .instr_out(instr_out),
-  .pc_out(pc)
+  .pc_out(pc),
+  .branch_predicted_taken_out(branch_in)
   );
 
 
@@ -81,7 +83,9 @@ decode deco(
 
   .pc_in_dec(pc),
   .pc_out_dec(pc_out),
+
   .branch_in(branch_in),
+  .branch_out(branch_out),
 
   .valid_out(valid_out),
   .funct3_out(funct3),        //needed in ALU
@@ -94,9 +98,10 @@ decode deco(
   .rs2_value_out(rs2),          //needed in ALU
   .imm_value_out(imm)          //needed in ALU
   .branch_op_out(branch_op_out),
-  .branch_pc_src_out(branch_pc_src_out),
-  .branch_out(branch_out)
+  .branch_pc_src_out(branch_pc_src_out)
+
   );
+
 
 execute exec (
   .req(req),
@@ -108,11 +113,14 @@ execute exec (
   .alu_funct3(funct3),
   .alu_funct7(funct7),
 
-
   .rs1_value_in(rs1),
   .rs2_value_in(rs2),
   .imm_value_in(imm),
   .pc_co_in(pc_out),
+
+  .branch_pc_src_in(branch_pc_src_out), //de decode
+  .branch_predicted_taken_in(branch_out), //de decode
+  .branch_predicted_taken_out(execute_branch_predicted_taken), //a remplacer branchement finalement pris ou pas
 
   .rd_in(rd_out),
   .rd_out(rd_in),
