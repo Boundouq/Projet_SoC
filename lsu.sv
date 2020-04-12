@@ -4,7 +4,9 @@
 module lsu(
   input [6:0] opcode_in,//
   input [2:0] funct3,
-  input reg [4:0] rd_in,//
+  input reg [4:0] rd_in_lsu,//
+  input reg [4:0] rd_in_data,//
+
   input mem_valid,//
 
   input [31:0] data_add_in,//
@@ -22,62 +24,76 @@ module lsu(
   //
 
   output reg rd_write,//
-  output reg [4:0] rd_out,//
+  output reg [4:0] rd_out_data,//
+  output reg [4:0] rd_out_lsu,//
+
   output reg [31:0] mem_data_out//
   );
 
-  assign data_add_o = data_add_in;
-  assign rd_out = rd_in;
-  assign data_wdata_o = mem_wdata_in;
 
-  real add = data_add_in % 4;
+  wire [2:0] add ;
+  assign add = data_add_in % 4;
+
+  reg [2:0] funct;
+  reg [4:0] rd;
 
   always @ ( * ) begin
     data_req_o = 0;
     data_we_o = 1'bx;
-    rd_write = 1;
     mem_data_out = 31'bx;
+
+    data_add_o = data_add_in;
+    data_wdata_o = mem_wdata_in;
+
+    rd_out_data = rd_in_lsu;
+
+    if (data_rvalid) begin
+              case (funct)
+                3'b000:   begin
+                          case (add)
+                                0:  mem_data_out = {{24{data_rdata_in[7]}},data_rdata_in[7:0]};
+                                1:  mem_data_out = {{24{data_rdata_in[15]}},data_rdata_in[15:7]};
+                                2:  mem_data_out = {{24{data_rdata_in[23]}},data_rdata_in[23:16]};
+                                3:  mem_data_out = {{24{data_rdata_in[31]}},data_rdata_in[31:24]};
+                          endcase
+                          end
+                3'b001:   begin
+                          case (add)
+                                0:  mem_data_out = {{16{data_rdata_in[15]}},data_rdata_in[15:0]};
+                                2:  mem_data_out = {{16{data_rdata_in[31]}},data_rdata_in[31:16]};
+                          endcase
+                          end
+                3'b010:   mem_data_out = data_rdata_in;
+                3'b100:   begin
+                          case (add)
+                                0:  mem_data_out = {{24{1'b0}},data_rdata_in[7:0]};
+                                1:  mem_data_out = {{24{1'b0}},data_rdata_in[15:7]};
+                                2:  mem_data_out = {{24{1'b0}},data_rdata_in[23:16]};
+                                3:  mem_data_out = {{24{1'b0}},data_rdata_in[31:24]};
+                          endcase
+                          end
+                3'b101:   begin
+                          case (add)
+                                0:  mem_data_out = {{16{1'b0}},data_rdata_in[15:0]};
+                                2:  mem_data_out = {{16{1'b0}},data_rdata_in[31:16]};
+                          endcase
+                          end
+              endcase
+              rd_write = 0;
+              rd_out_lsu = rd_in_data;
+
+
+
+    end
 
     if (mem_valid) begin
       data_req_o = 1;
       case (opcode_in)
         `I_type_ld: begin
           data_we_o = 0;
-          if (data_rvalid) begin
-                    case (funct3)
-                      3'b000:   begin
-                                case (add)
-                                      0:  mem_data_out = {{24{data_rdata_in[7]}},data_rdata_in[7:0]};
-                                      1:  mem_data_out = {{24{data_rdata_in[15]}},data_rdata_in[15:7]};
-                                      2:  mem_data_out = {{24{data_rdata_in[23]}},data_rdata_in[23:16]};
-                                      3:  mem_data_out = {{24{data_rdata_in[31]}},data_rdata_in[31:24]};
-                                endcase
-                                end
-                      3'b001:   begin
-                                case (add)
-                                      0:  mem_data_out = {{16{data_rdata_in[15]}},data_rdata_in[15:0]};
-                                      2:  mem_data_out = {{16{data_rdata_in[31]}},data_rdata_in[31:16]};
-                                endcase
-                                end
-                      3'b010:   mem_data_out = data_rdata_in;
-                      3'b100:   begin
-                                case (add)
-                                      0:  mem_data_out = {{24{1'b0}},data_rdata_in[7:0]};
-                                      1:  mem_data_out = {{24{1'b0}},data_rdata_in[15:7]};
-                                      2:  mem_data_out = {{24{1'b0}},data_rdata_in[23:16]};
-                                      3:  mem_data_out = {{24{1'b0}},data_rdata_in[31:24]};
-                                endcase
-                                end
-                      3'b101:   begin
-                                case (add)
-                                      0:  mem_data_out = {{16{1'b0}},data_rdata_in[15:0]};
-                                      2:  mem_data_out = {{16{1'b0}},data_rdata_in[31:16]};
-                                endcase
-                                end
-                    endcase
-                    rd_write = 0;
+          funct = funct3;
           end
-        end
+
 
         `S_type:  begin
           data_we_o = 1;
@@ -98,6 +114,7 @@ module lsu(
                       end
             3'b010:   data_be_o = 4'b0001;
           endcase
+
         end
       endcase
     end

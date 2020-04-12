@@ -6,7 +6,7 @@ timeprecision 1ns;
 bit req = 1'b0;
 bit reset = 1'b1;
 
-logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out;
+logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out,branch_pc_out,lsu_out;
 logic [2:0] funct3;
 logic [6:0] funct7,opcode;
 logic [4:0] rd_in,rd_out;
@@ -74,7 +74,7 @@ fetch fetch(
 
 decode deco(
   .req(req),
-  .reset(reset)
+  .reset(reset),
   .rs_read(!rs_read),
   .rd_in(rd_in),
   .rd_write_in(rd_write_in),
@@ -96,7 +96,7 @@ decode deco(
   .rd_write_out(rd_write_out),
   .rs1_value_out(rs1),           //needed in ALU
   .rs2_value_out(rs2),          //needed in ALU
-  .imm_value_out(imm)          //needed in ALU
+  .imm_value_out(imm),          //needed in ALU
   .branch_op_out(branch_op_out),
   .branch_pc_src_out(branch_pc_src_out)
 
@@ -106,7 +106,7 @@ decode deco(
 execute exec (
   .req(req),
 
-  .stall_in(~valid_out),
+  .stall_in(valid_out),
 
 
   .alu_opcode_in(opcode),
@@ -121,14 +121,70 @@ execute exec (
   .branch_pc_src_in(branch_pc_src_out), //de decode
   .branch_predicted_taken_in(branch_out), //de decode
   .branch_predicted_taken_out(execute_branch_predicted_taken), //a remplacer branchement finalement pris ou pas
+  .branch_pc_out(branch_pc_out),
+
 
   .rd_in(rd_out),
   .rd_out(rd_in),
   .rd_write(rd_write_in),
   .alu_non_zero_out(alu_non_zero_out),
+  .lsu_out(lsu_out),
 
   .result_out(rd)
   );
+  logic data_gnt_in, data_rvalid,data_we_o,data_req_o;
+  logic [31:0] data_rdata_in, data_add_o,data_wdata_o;
+  logic [3:0] data_be_o;
+  logic [4:0] rd_data_in,rd_data_o;
+
+  lsu lsu (
+    .opcode_in(opcode),//
+    .funct3(funct3),
+    .rd_in_lsu(rd_out),//
+    .rd_in_data(rd_data_o),//
+
+    .mem_valid(valid_out),//
+
+    .data_add_in(lsu_out),//
+    .mem_wdata_in(rs2),//
+    //
+    .data_gnt_in(data_gnt_in),
+    .data_rvalid(data_rvalid),//
+    .data_rdata_in(data_rdata_in),//
+
+    .data_add_o(data_add_o),//
+    .data_wdata_o(data_wdata_o),//
+    .data_be_o(data_be_o),//
+    .data_we_o(data_we_o),//
+    .data_req_o(data_req_o),//
+    //
+
+    .rd_write(rd_write_in),//
+    .rd_out_lsu(rd_in),//
+    .rd_out_data(rd_data_in),
+    .mem_data_out(rd)//
+    );
+
+
+   data_ram data_ram (
+        .req(req),
+
+        .data_add_in(data_add_o),//
+        .data_we_in(data_we_o),//
+        .data_be_in(data_be_o),//
+        .data_wdata_in(data_wdata_o),//
+        .data_req_in(data_req_o),
+        .rd_in_data(rd_data_in),//
+        .rd_out_data(rd_data_o),//
+
+
+        .data_gnt_o(data_gnt_in),
+        .data_rvalid(data_rvalid),//
+        .data_rdata_o(data_rdata_in) //
+
+    );
+
+
 
   initial
 	begin

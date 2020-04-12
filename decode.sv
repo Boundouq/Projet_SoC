@@ -23,7 +23,7 @@ module decode (
    input [31:0] instr_in,
 
    input [31:0] pc_in_dec,
-   output [31:0] pc_out_dec,
+   output reg [31:0] pc_out_dec,
 
 
    output reg [3:0] branch_op_out,
@@ -34,7 +34,7 @@ module decode (
    output reg [2:0] funct3_out,        //needed in ALU
    output reg [6:0] funct7_out,       //needed in ALU
    output reg [6:0] alu_op_out,
-   output reg alu_sub_sra_out,
+   output reg alu_sub_sra_out,   //no need
    output reg [4:0] rd_out,
    output reg rd_write_out,
 
@@ -52,7 +52,7 @@ module decode (
     wire [2:0] funct3;
     wire [6:0] funct7;
     always @ ( * ) begin
-      if (instr_in[6:0] == `R_type) rs2 = instr_in[24:20];
+      if (instr_in[6:0] == `R_type ||instr_in[6:0] == `S_type ) rs2 = instr_in[24:20];
     end
     assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
@@ -113,13 +113,13 @@ module decode (
         .alu_sub_sra_out(alu_sub_sra),
         .alu_src1_out(alu_src1),
         .alu_src2_out(alu_src2),
-        .rd_write_out(rd_write),
-        .mem_read_out(mem_read),
-        .mem_write_out(mem_write),
-        .mem_width_out(mem_width),
+        .rd_write_out(rd_write),//active ld
+        .mem_read_out(mem_read),//ld
+        .mem_write_out(mem_write),//st
+        .mem_width_out(mem_width),//word ..
         .mem_zero_extend_out(mem_zero_extend),
         .branch_op_out(branch_op),
-        .branch_pc_src_out(branch_pc_src)
+        .branch_pc_src_out(branch_pc_src) //pc or rs1
 
     );
 
@@ -159,8 +159,8 @@ module decode (
 
             if (reset) begin
                    valid_out <= 0;
-                   mem_read_out <= 0;
-                   mem_write_out <= 0;
+                   //mem_read_out <= 0;
+                   //mem_write_out <= 0;
                    branch_op_out <= 0;
                    rd_write_out <= 0;
                end

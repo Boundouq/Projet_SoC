@@ -1,6 +1,8 @@
 `ifndef fetch
 `define fetch
 
+`define B_type 7'b1100011
+`define J_type 7'b1101111
 
 module fetch(
 input req,
@@ -46,17 +48,17 @@ wire [31:0] imm_j;
 wire [31:0] imm_b;
 wire [6:0] opcode;
 
-assign imm_j = instr_in[31:12];
-assign imm_b = {instr_in[31:25], instr_in[11:7];
-assign opcode = instr_read_value_in[6:0];
+assign imm_j = instr_rdata_in[31:12];
+assign imm_b = {instr_rdata_in[31:25],instr_rdata_in[11:7]};
+assign opcode = instr_rdata_in[6:0];
 
 always @* begin
         case (opcode)
-            `OPCODE_JAL: begin
+            `J_type: begin
                 branch_predicted_taken = 1;
                 branch_offset = imm_j;
             end
-            `OPCODE_BRANCH: begin
+            `B_type: begin
                 branch_predicted_taken = 1;
                 branch_offset = imm_b;
             end

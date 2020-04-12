@@ -75,13 +75,13 @@ module control_unit
       mem_width_out = 4'bx;
       mem_zero_extend_out = 1'bx;
 
-      branch_op_out = `BRANCH_OP_NEVER
+      branch_op_out = `BRANCH_OP_NEVER;
       branch_pc_src_out = 1'bx;
 
 
  casez (instr_in)
   `INSTR_ADDI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -91,7 +91,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SLTI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -101,7 +101,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SLTIU: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -111,7 +111,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_XORI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -120,7 +120,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_ORI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -129,7 +129,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_ANDI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -138,7 +138,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SLLI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -147,7 +147,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SRLI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -157,7 +157,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SRAI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `I_type_op;
                  alu_op_out = `I_type_op;
@@ -167,7 +167,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_ADD: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -177,7 +177,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SUB: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -188,7 +188,7 @@ module control_unit
              end
 
   `INSTR_SLL: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -197,7 +197,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SLT: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -207,7 +207,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SLTU: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -217,7 +217,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_XOR: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out =  `R_type;
@@ -226,7 +226,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SRL: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -236,7 +236,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_SRA: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -246,7 +246,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_OR: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -255,7 +255,7 @@ module control_unit
                  rd_write_out = 1;
              end
   `INSTR_AND: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  alu_op_out = `R_type;
@@ -268,7 +268,7 @@ module control_unit
 //new
 
    `INSTR_LUI: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  imm_out = `U_type;
                  alu_op_out = `U_type;
                  alu_sub_sra_out = 0;
@@ -277,7 +277,7 @@ module control_unit
                  rd_write_out = 1;
              end
    `INSTR_AUIPC: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  imm_out = `U_type;
                  alu_op_out = `U_type;
                  alu_sub_sra_out = 0;
@@ -286,7 +286,7 @@ module control_unit
                  rd_write_out = 1;
              end
     `INSTR_JAL: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  imm_out = `J_type;
                  alu_op_out = `J_type;
                  alu_sub_sra_out = 0;
@@ -297,7 +297,7 @@ module control_unit
                  rd_write_out = 1;
              end
      `INSTR_JALR: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  imm_out = `J_type;
                  alu_op_out = `J_type;
@@ -309,7 +309,7 @@ module control_unit
                  rd_write_out = 1;
              end
       `INSTR_BEQ: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -321,7 +321,7 @@ module control_unit
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BNE: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -333,7 +333,7 @@ module control_unit
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BLT: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -345,7 +345,7 @@ module control_unit
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BGE: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -357,7 +357,7 @@ module control_unit
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BLTU: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -369,7 +369,7 @@ module control_unit
                  branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BGEU: begin
-                 valid_out = 1;
+                 valid_out = 0;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
                  imm_out = `B_type;
@@ -448,8 +448,8 @@ module control_unit
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
-                 imm_out = `IMM_S;
-                 alu_op_out = `ALU_OP_ADD_SUB;
+                 imm_out = `S_type;
+                 alu_op_out = `S_type;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out =  4'b0101; //IMM
@@ -460,8 +460,8 @@ module control_unit
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
-                 imm_out = `IMM_S;
-                 alu_op_out = `ALU_OP_ADD_SUB;
+                 imm_out = `S_type;
+                 alu_op_out = `S_type;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out =  4'b0101; //IMM
@@ -472,8 +472,8 @@ module control_unit
                  valid_out = 1;
                  rs1_read_out = 1;
                  rs2_read_out = 1;
-                 imm_out = `IMM_S;
-                 alu_op_out = `ALU_OP_ADD_SUB;
+                 imm_out = `S_type;
+                 alu_op_out = `S_type;
                  alu_sub_sra_out = 0;
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out =  4'b0101; //IMM

@@ -4,6 +4,8 @@
 
 `define R_type 7'b0110011
 `define I_type_op 7'b0010011 //I_type operation
+`define I_type_ld 7'b0000011 //I_type load
+`define S_type 7'b0100011
 
 
 module alu(
@@ -15,7 +17,6 @@ module alu(
   input [31:0] rs1_value_in,
   input [31:0] rs2_value_in,
   input [31:0] imm_value_in,
-  input [31:0] pc_co_in,
 
   output wire non_zero_out,
 
@@ -53,7 +54,7 @@ module alu(
                       src1 = rs1_value_in;
                       src2 = rs2_value_in;
                       end
-            `I_type_op: begin
+            `I_type_op, `I_type_ld, `S_type: begin
                                       src1 = rs1_value_in;
                                       src2 = imm_value_in;
                                       end
@@ -101,6 +102,9 @@ module alu(
             3'b010: result_out = {31'b0, lt};   //slti
             3'b011: result_out = {31'b0, ltu};  //sltiu
           endcase
+
+        `I_type_ld , `S_type:
+              result_out = add_sub[31:0]; //rs1 + imm for lsu
 
       endcase
     end

@@ -1,6 +1,8 @@
 `ifndef execute
 `define execute
 
+`define I_type_ld 7'b0000011 //I_type load
+`define S_type 7'b0100011
 
 module execute(
   input req,
@@ -28,7 +30,10 @@ module execute(
   output reg alu_non_zero_out,
 
   output reg [31:0] result_out,
+  output reg [31:0] lsu_out,
 
+
+  output reg [31:0] branch_pc_out,
   output reg branch_predicted_taken_out
 
   );
@@ -59,7 +64,8 @@ module execute(
     .rs1_value_in(rs1_value_in),
     .rs2_value_in(rs2_value_in),
     .imm_value_in(imm_value_in),
-    .pc_co_in(pc_co_in),
+
+    .non_zero_out(alu_non_zero),
 
     .result_out(alu_result)
     );
@@ -79,6 +85,11 @@ module execute(
 
         .pc_out(branch_pc)
     );
+
+    always @ ( * ) begin
+          if (alu_opcode_in == `I_type_ld || alu_opcode_in == `S_type)
+          lsu_out = alu_result;
+    end
 
    always @(posedge req) begin
       if(!stall_in) begin
