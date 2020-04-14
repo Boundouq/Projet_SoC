@@ -53,20 +53,21 @@ instr_ram instr(
 
 fetch fetch(
   .req(req),
+  .reset(reset),
 
   .instr_rvalid_in(instr_rvalid_in),
   .gnt_in(gnt_in),
   .instr_rdata_in(instr_in),
 
   .branch_mispredicted_in(br),
+  .pc_in(branch_pc_out),
 
 
   .instr_req_out(instr_req_out),
   .instr_addr_out(instr_addr_out),
   .instr_read_out(rs_read),
   .instr_out(instr_out),
-  .pc_out(pc),
-  .branch_predicted_taken_out(branch_in)
+  .pc_out(pc)
   );
 
 
@@ -84,9 +85,6 @@ decode deco(
   .pc_in_dec(pc),
   .pc_out_dec(pc_out),
 
-  .branch_in(branch_in),
-  .branch_out(branch_out),
-
   .valid_out(valid_out),
   .funct3_out(funct3),        //needed in ALU
   .funct7_out(funct7),       //needed in ALU
@@ -96,10 +94,7 @@ decode deco(
   .rd_write_out(rd_write_out),
   .rs1_value_out(rs1),           //needed in ALU
   .rs2_value_out(rs2),          //needed in ALU
-  .imm_value_out(imm),          //needed in ALU
-  .branch_op_out(branch_op_out),
-  .branch_pc_src_out(branch_pc_src_out)
-
+  .imm_value_out(imm)          //needed in ALU
   );
 
 
@@ -118,11 +113,8 @@ execute exec (
   .imm_value_in(imm),
   .pc_co_in(pc_out),
 
-  .branch_pc_src_in(branch_pc_src_out), //de decode
-  .branch_predicted_taken_in(branch_out), //de decode
-  .branch_predicted_taken_out(execute_branch_predicted_taken), //a remplacer branchement finalement pris ou pas
   .branch_pc_out(branch_pc_out),
-
+  .branch_mispredicted_out(br),
 
   .rd_in(rd_out),
   .rd_out(rd_in),
@@ -198,15 +190,14 @@ execute exec (
     #(`PERIODE/2) req =~ req;
 
 
-  always @ (posedge req, negedge reset ) begin
+  /*always @ (posedge req, negedge reset ) begin
       instr_req_out = 1'b1;
-  end
+  end*/
 
   initial begin
   #25 {reset} = 1'b0; $display("HELLO");
    @(posedge req)
-      br = 1'b1 ;@(posedge req) $display ("HELLO");
-      br = 1'b0 ;@(posedge req) $display ("HELLO");
+      @(posedge req) $display ("HELLO");
 
       //{reset, br, instr } = 34'b1_1_xxxxxxx_xxxxx_xxxxx_xxx_xxxxx_xxxxxxx; @(posedge req_0) $display ("HELLO");
       //{br, instr } = 33'b0_0000000_00001_00001_000_00001_0010011; @(posedge req) $display ("HELLO"); //R1 + 1 -> R1

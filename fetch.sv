@@ -1,11 +1,9 @@
 `ifndef fetch
 `define fetch
 
-`define B_type 7'b1100011
-`define J_type 7'b1101111
-
 module fetch(
 input req,
+input reset,
 //input stall_in,
 //input flush_in,
 
@@ -13,73 +11,51 @@ input instr_rvalid_in,
 input gnt_in,
 input [31:0] instr_rdata_in,
 
-input branch_mispredicted_in,
-
+input branch_mispredicted_in, // si v=1 initialisation pc =0 , v=0 next_pc (bra, bran normal)
+input [31:0] pc_in,
 
 output reg instr_req_out,
 output reg [31:0] instr_addr_out,
 output reg instr_read_out,
 output reg [31:0] instr_out,
-output reg [31:0] pc_out,
-output reg branch_predicted_taken_out
+output reg [31:0] pc_out
 );
 
 reg [31:0] next_pc;
 wire [31:0] pc;
 
-assign pc = branch_mispredicted_in ? 32'b0 : next_pc;
-
-
-reg [31:0] branch_offset;
-reg branch_predicted_taken;
-
-//assign branch_offset = 1'b1;
-
+assign pc = branch_mispredicted_in ? pc_in : next_pc;
 
 always @ (*) begin
-  if (gnt_in) begin
-    instr_req_out = 1;
+
+  if (!reset) begin
     instr_addr_out = pc;
+  end
+
+  else if (!gnt_in) begin
+    instr_addr_out = 32'bx;
   end
 
 end
 
-wire [31:0] imm_j;
-wire [31:0] imm_b;
-wire [6:0] opcode;
-
-assign imm_j = instr_rdata_in[31:12];
-assign imm_b = {instr_rdata_in[31:25],instr_rdata_in[11:7]};
-assign opcode = instr_rdata_in[6:0];
-
-always @* begin
-        case (opcode)
-            `J_type: begin
-                branch_predicted_taken = 1;
-                branch_offset = imm_j;
-            end
-            `B_type: begin
-                branch_predicted_taken = 1;
-                branch_offset = imm_b;
-            end
-            default: begin
-                branch_offset = 1'b1;
-            end
-        endcase
-    end
-
-
-
 assign instr_read_out = instr_rvalid_in;
-
 
 always_ff @ (posedge req) begin
   if (instr_rvalid_in)begin
     instr_out <= instr_rdata_in;
-    next_pc <= pc + branch_offset;
+    next_pc <= pc + 1'b1;
     pc_out <= pc;
-    branch_predicted_taken_out <= branch_predicted_taken;
-
+  end
+  if (reset)  begin
+    next_pc <= 0;
+    instr_out <= 32'bx;
+    pc_out <= 32'bx;
+  end
+  if (!reset) begin
+    instr_req_out <= 1;
+  end
+  else if (!gnt_in) begin
+    instr_req_out <= 0;
   end
 end
 endmodule

@@ -21,9 +21,6 @@
 `define BRANCH_OP_NON_ZERO 4'b1010
 `define BRANCH_OP_ALWAYS   4'b1111
 
-//type de branchement
-`define BRANCH_PC_SRC_IMM 1'b0 //branch sur imm
-`define BRANCH_PC_SRC_REG 1'b1 //branch sur registre
 
 //MEMOIRE
 `define MEM_WIDTH_WORD 4'b0000
@@ -52,9 +49,7 @@ module control_unit
     output reg [3:0] mem_width_out,
     output reg mem_zero_extend_out, // 1 si zero extends 0 sinon
 
-    output reg [3:0] branch_op_out,
-    output reg branch_pc_src_out
-
+    output reg [3:0] branch_op_out
   );
 
 
@@ -76,7 +71,6 @@ module control_unit
       mem_zero_extend_out = 1'bx;
 
       branch_op_out = `BRANCH_OP_NEVER;
-      branch_pc_src_out = 1'bx;
 
 
  casez (instr_in)
@@ -293,7 +287,6 @@ module control_unit
                  alu_src1_out = 4'b0101; //PC
                  alu_src2_out = 4'b1010; //4
                  branch_op_out = `BRANCH_OP_ALWAYS;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
                  rd_write_out = 1;
              end
      `INSTR_JALR: begin
@@ -305,7 +298,6 @@ module control_unit
                  alu_src1_out = 4'b0101; //PC
                  alu_src2_out = 4'b1010; //4
                  branch_op_out = `BRANCH_OP_ALWAYS;
-                 branch_pc_src_out = `BRANCH_PC_SRC_REG;
                  rd_write_out = 1;
              end
       `INSTR_BEQ: begin
@@ -318,7 +310,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BNE: begin
                  valid_out = 0;
@@ -330,7 +321,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_NON_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BLT: begin
                  valid_out = 0;
@@ -342,7 +332,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_NON_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BGE: begin
                  valid_out = 0;
@@ -354,7 +343,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BLTU: begin
                  valid_out = 0;
@@ -366,7 +354,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_NON_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_BGEU: begin
                  valid_out = 0;
@@ -378,7 +365,6 @@ module control_unit
                  alu_src1_out = 4'b0000; //REG
                  alu_src2_out = 4'b0000; //REG
                  branch_op_out = `BRANCH_OP_ZERO;
-                 branch_pc_src_out = `BRANCH_PC_SRC_IMM;
              end
       `INSTR_LB: begin
                  valid_out = 1;

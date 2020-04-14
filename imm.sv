@@ -25,7 +25,7 @@ module immediat (
 
     assign imm_i = instr_in[31:20];
     assign imm_u = instr_in[31:12];
-    assign imm_b = {instr_in[31:25], instr_in[11:7]};
+    assign imm_b = {instr_in[7], instr_in[30:25], instr_in[11:8], instr_in[31]};
     assign imm_j = instr_in[31:12];
     assign imm_s = {instr_in[31:25], instr_in[11:7]};
 

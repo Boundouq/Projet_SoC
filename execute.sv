@@ -20,8 +20,6 @@ module execute(
   input [31:0] pc_co_in,
   //
   input  reg [4:0] rd_in,
-  input branch_pc_src_in,
-  input branch_predicted_taken_in,
 
   output reg rd_write,
   output reg [4:0] rd_out,
@@ -34,7 +32,7 @@ module execute(
 
 
   output reg [31:0] branch_pc_out,
-  output reg branch_predicted_taken_out
+  output reg branch_mispredicted_out
 
   );
 
@@ -75,7 +73,6 @@ module execute(
     reg [31:0] branch_pc;
 
     branch_pc branch (
-        .pc_src_in(branch_pc_src_in),
         .opcode(alu_opcode_in),
         .pc_in(pc_co_in),
         .funct3(alu_funct3),
@@ -83,7 +80,9 @@ module execute(
         .rs2_value_in(rs2_value_in),
         .imm_value_in(imm_value_in),
 
-        .pc_out(branch_pc)
+        .pc_out(branch_pc_out),
+        .branch_mispredicted_out(branch_mispredicted_out)
+
     );
 
     always @ ( * ) begin
@@ -97,8 +96,6 @@ module execute(
       result_out <= alu_result;
       rd_out <= rd_in;
       alu_non_zero_out <= alu_non_zero;
-      branch_predicted_taken_out <= branch_predicted_taken_in;
-      branch_pc_out <= branch_pc;
       end
     end
 endmodule

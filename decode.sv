@@ -13,7 +13,6 @@ module decode (
 
    input req,
    input reset,
-   input branch_in,
    input rs_read,
 
    input [4:0] rd_in,
@@ -24,11 +23,6 @@ module decode (
 
    input [31:0] pc_in_dec,
    output reg [31:0] pc_out_dec,
-
-
-   output reg [3:0] branch_op_out,
-   output reg branch_pc_src_out,
-   output reg branch_out,
 
    output reg valid_out,
    output reg [2:0] funct3_out,        //needed in ALU
@@ -42,7 +36,6 @@ module decode (
    output reg [31:0] rs1_value_out,           //needed in ALU
    output reg [31:0] rs2_value_out,          //needed in ALU
    output reg [31:0] imm_value_out          //needed in ALU
-
 );
 
     logic [4:0] rs2; //wire??
@@ -52,7 +45,7 @@ module decode (
     wire [2:0] funct3;
     wire [6:0] funct7;
     always @ ( * ) begin
-      if (instr_in[6:0] == `R_type ||instr_in[6:0] == `S_type ) rs2 = instr_in[24:20];
+      if (instr_in[6:0] == `R_type ||instr_in[6:0] == `S_type || instr_in[6:0] == `B_type) rs2 = instr_in[24:20];
     end
     assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
@@ -118,9 +111,7 @@ module decode (
         .mem_write_out(mem_write),//st
         .mem_width_out(mem_width),//word ..
         .mem_zero_extend_out(mem_zero_extend),
-        .branch_op_out(branch_op),
-        .branch_pc_src_out(branch_pc_src) //pc or rs1
-
+        .branch_op_out(branch_op)
     );
 
     reg [31:0] imm_value;
@@ -152,16 +143,11 @@ module decode (
             imm_value_out <= imm_value;
             funct3_out <= funct3;
             funct7_out <= funct7;
-            branch_op_out <= branch_op;
-            branch_pc_src_out <= branch_pc_src;
-
-            branch_out <= branch_in;
 
             if (reset) begin
                    valid_out <= 0;
                    //mem_read_out <= 0;
                    //mem_write_out <= 0;
-                   branch_op_out <= 0;
                    rd_write_out <= 0;
                end
 
