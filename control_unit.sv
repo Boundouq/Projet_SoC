@@ -476,6 +476,7 @@ module control_unit
                             alu_src1_out = 4'b0000;
                             alu_src2_out = 4'b0101;
                             rd_write_out = 1;
+                  end
              endcase
          end
      endmodule
