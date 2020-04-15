@@ -116,6 +116,11 @@ module decode (
         .branch_op_out(branch_op)
     );
 
+    always @ (*) begin
+                  if (imm == 7'b0010011) funct3 = 3'b0;
+                  else funct3 = instr_in[14:12];
+    end
+
     reg [31:0] imm_value;
 
     immediat immediat (
@@ -133,10 +138,7 @@ module decode (
 
     end
 
-    always @ (*) begin
-                  if (imm == 7'b0010011) funct3 = 3'b0;
-                  else funct3 = instr_in[14:12];
-    end
+
 
     always_ff @(posedge req) begin
         if (!rs_read) begin
