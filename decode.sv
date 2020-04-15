@@ -51,10 +51,11 @@ module decode (
     assign rd  = instr_in[11:7];
 
     //assign funct3 = instr_in[14:12];
-
-
     assign funct7 = instr_in[31:25];
-
+    always @ ( * ) begin
+      if (instr_in[6:0] == 7'b0010011) funct3 = 3'b0;
+      else unct3 = instr_in[14:12];
+    end
 
 
 
@@ -116,9 +117,6 @@ module decode (
         .branch_op_out(branch_op)
     );
 
-
-    if (imm == 7'b0010011) assign funct3 = 3'b0;
-    else assign funct3 = instr_in[14:12];
 
 
     reg [31:0] imm_value;
