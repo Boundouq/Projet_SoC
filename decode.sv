@@ -116,10 +116,10 @@ module decode (
         .branch_op_out(branch_op)
     );
 
-    always @ (*) begin
-                  if (imm == 7'b0010011) funct3 = 3'b0;
-                  else funct3 = instr_in[14:12];
-    end
+
+    if (imm == 7'b0010011) assign funct3 = 3'b0;
+    else assign funct3 = instr_in[14:12];
+
 
     reg [31:0] imm_value;
 
