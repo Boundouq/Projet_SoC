@@ -13,7 +13,7 @@
 `define B_type 7'b1100011
 `define J_type 7'b1101111
 `define S_type 7'b0100011
-`define NOP_type 7'b0010011
+`define NOP_type 7'b0000000
 
 //BRANCH
 `define BRANCH_OP_NEVER    4'b0000

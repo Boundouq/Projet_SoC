@@ -53,7 +53,7 @@ module decode (
     //assign funct3 = instr_in[14:12];
     assign funct7 = instr_in[31:25];
     always @ ( * ) begin
-      if (instr_in[6:0] == 7'b0010011) funct3 = 3'b0;
+      if (instr_in[6:0] == 7'b0000000) funct3 = 3'b0;
       else funct3 = instr_in[14:12];
     end
 
