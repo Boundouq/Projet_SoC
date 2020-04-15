@@ -50,7 +50,12 @@ module decode (
     assign rs1 = instr_in[19:15];
     assign rd  = instr_in[11:7];
 
-    assign funct3 = instr_in[14:12];
+    //assign funct3 = instr_in[14:12];
+    always @ (*) begin
+                  if (imm == 7'b0010011) funct3 = 3'b0;
+                  else funct3 = instr_in[14:12];
+    end
+
     assign funct7 = instr_in[31:25];
 
 

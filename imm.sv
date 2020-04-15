@@ -7,6 +7,7 @@
 `define B_type 7'b1100011
 `define J_type 7'b1101111
 `define S_type 7'b0100011
+`define NOP_type 7'b0010011
 
 module immediat (
     input [6:0] imm_in,
@@ -37,6 +38,7 @@ module immediat (
             `B_type:        imm_value_out = imm_b;
             `J_type:        imm_value_out = imm_j;
             `S_type:        imm_value_out = imm_s;
+            `NOP_type:      imm_value_out = 32'b0;
         endcase
     end
 endmodule

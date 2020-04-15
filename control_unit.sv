@@ -13,7 +13,7 @@
 `define B_type 7'b1100011
 `define J_type 7'b1101111
 `define S_type 7'b0100011
-
+`define NOP_type 7'b0010011
 
 //BRANCH
 `define BRANCH_OP_NEVER    4'b0000
@@ -467,6 +467,15 @@ module control_unit
                  mem_width_out = `MEM_WIDTH_WORD;
              end
 
+      `INSTR_NOP: begin
+                            valid_out = 0;
+                            rs1_read_out = 1;
+                            imm_out = `NOP_type;
+                            alu_op_out = `I_type_op;
+                            alu_sub_sra_out = 0;
+                            alu_src1_out = 4'b0000;
+                            alu_src2_out = 4'b0101;
+                            rd_write_out = 1;
              endcase
          end
      endmodule
