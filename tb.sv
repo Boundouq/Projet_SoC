@@ -4,33 +4,30 @@ timeunit  1ns;
 timeprecision 1ns;
 
 bit reset = 1'b1;
-reg req_0,req_1,req_2,req_3;
-bit data;
+bit set = 1'b0;
+reg req1,req2_1,req2_2,req3,req4;
+reg [6:0] opcode;
 
 
- ctrl ctrl(
-   .reset(reset),
+asyn_controller asyn(
+  .set(set),
+  .reset(reset),
+  .opcode(opcode),
 
-   .req_0(req_0),
-   .req_1(req_1),
-   .req_2(req_2),
-   .req_3(req_3)
+  .req1(req1),
+  .req2_1(req2_1),
+  .req2_2(req2_2),
+  .req3(req3),
+  .req4(req4)
   );
 
 
 
-  initial forever begin
+  initial begin
     $timeformat(-9, 1, "ns", 12);
 
-  /*  always @ (*) begin
-        data = 1'b1;
-    end*/
-
-    #100 {reset} = 1'b0; $display("HELLO");
-
-
-    #100
-
+    //#100 {reset,set,opcode} = 9'b1_0_0000011; $display("HELLO");
+    {reset,set,opcode} = 9'b0_1_0000011; $display("HELLO");
 
 
     $display ("TESTE PASSED");

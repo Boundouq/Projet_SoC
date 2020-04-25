@@ -19,7 +19,7 @@ module ctrl(
   logic req_1;
   logic req_2;
   logic req_3;
-
+  //logic a,b;
 
 
 
@@ -31,8 +31,8 @@ module ctrl(
          req_3 = 0;
          req[0] = 1;
 
-
   end
+
 
 
  controller ctrl0(
@@ -43,7 +43,6 @@ module ctrl(
   .req_i1(req_1),
   .ack_i(ack_0)
   );
-
   controller ctrl1(
    .req_i(req_1),
    .ack_i1(ack_2),
@@ -63,7 +62,11 @@ module ctrl(
     .req_i1(req_0),
     .ack_i(ack_2)
     );
-
+    /*always @(*) begin
+      #100
+      req_1 = a;
+      ack_0 = b;
+      end*/
     /*controller ctrl3(
      .req_i(req_3),
      .ack_i1(ack_0),

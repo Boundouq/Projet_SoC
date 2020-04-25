@@ -1,18 +1,18 @@
-module join(
+module j(
 
 input E1_req,
 input E2_req,
-output S_req,
+output reg S_req,
 
 input S_ack,
-output E1_ack,
-output E2_ack
+output reg E1_ack,
+output reg E2_ack
 
 );
 
 c_element c (
-  .a(E1_req)
-  .b(E2_req)
+  .a(E1_req),
+  .b(E2_req),
   .c(S_req)
   );
 

@@ -9,13 +9,17 @@ module merge_2_L_ALU(
 
   output reg req_out,
   output reg ack_out_1,
-  output reg ack_out_2,
+  output reg ack_out_2
 
 );
 
   reg [1:0] ctl;
   reg a,b;
 
+  initial begin
+    a = 0;
+    b = 0;
+  end
   always @ ( * ) begin
     case (opcode)
       `I_type_ld:
@@ -25,32 +29,30 @@ module merge_2_L_ALU(
       default:ctl = 3'bx;
     endcase
 
-
-    c_element c_req_1(
-      a.(req_1),
-      b.(ctl[0]),
-      c.(a)
-      );
-
-    c_element c_req_2(
-      a.(req_2),
-      b.(ctl[1]),
-      c.(b)
-      );
-
-    c_element c_ack_1(
-      a.(ack_in),
-      b.(a),
-      c.(ack_out_1)
-      );
-
-    c_element c_ack_2(
-      a.(ack_in),
-      b.(b),
-      c.(ack_out_2)
-      );
-
     req_out = a | b;
   end
 
+  c_element c_req_1(
+    .a(req_1),
+    .b(ctl[0]),
+    .c(a)
+    );
+
+  c_element c_req_2(
+    .a(req_2),
+    .b(ctl[1]),
+    .c(b)
+    );
+
+  c_element c_ack_1(
+    .a(ack_in),
+    .b(!a),
+    .c(ack_out_1)
+    );
+
+  c_element c_ack_2(
+    .a(ack_in),
+    .b(!b),
+    .c(ack_out_2)
+    );
 endmodule

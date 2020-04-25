@@ -17,12 +17,17 @@ module merge_3(
   output reg req_out,
   output reg ack_out_1,
   output reg ack_out_2,
-  output reg ack_out_3,
+  output reg ack_out_3
 
 );
 
   reg [2:0] ctl;
   reg a,b,c;
+  initial begin
+    a = 0;
+    b = 0;
+    c = 0;
+  end
 
   always @ ( * ) begin
     case (opcode)
@@ -36,43 +41,43 @@ module merge_3(
     endcase
 
 
-    c_element c_req_1(
-      a.(req_1),
-      b.(ctl[0]),
-      c.(a)
-      );
-
-    c_element c_req_2(
-      a.(req_2),
-      b.(ctl[1]),
-      c.(b)
-      );
-
-    c_element c_req_2(
-      a.(req_3),
-      b.(ctl[2]),
-      c.(c)
-      );
-
-    c_element c_ack_1(
-      a.(ack_in),
-      b.(a),
-      c.(ack_out_1)
-      );
-
-    c_element c_ack_2(
-      a.(ack_in),
-      b.(b),
-      c.(ack_out_2)
-      );
-
-    c_element c_ack_3(
-      a.(ack_in),
-      b.(c),
-      c.(ack_out_3)
-      );
-
     req_out = a | b | c;
   end
+
+      c_element c_req_1(
+        .a(req_1),
+        .b(ctl[0]),
+        .c(a)
+        );
+
+      c_element c_req_2(
+        .a(req_2),
+        .b(ctl[1]),
+        .c(b)
+        );
+
+      c_element c_req_3(
+        .a(req_3),
+        .b(ctl[2]),
+        .c(c)
+        );
+
+      c_element c_ack_1(
+        .a(ack_in),
+        .b(!a),
+        .c(ack_out_1)
+        );
+
+      c_element c_ack_2(
+        .a(ack_in),
+        .b(!b),
+        .c(ack_out_2)
+        );
+
+      c_element c_ack_3(
+        .a(ack_in),
+        .b(!c),
+        .c(ack_out_3)
+        );
 
 endmodule

@@ -23,6 +23,24 @@ module split_3(
 
   reg [2:0] ctl;
 
+  c_element c_req_1(
+    .a(req_in),
+    .b(ctl[0]),
+    .c(req_out_1)
+    );
+
+  c_element c_req_2(
+    .a(req_in),
+    .b(ctl[1]),
+    .c(req_out_2)
+    );
+
+  c_element c_req_3(
+    .a(req_in),
+    .b(ctl[2]),
+    .c(req_out_3)
+    );
+    
   always @ ( * ) begin
     case (opcode)
       `B_type , `J_type:
@@ -36,23 +54,6 @@ module split_3(
 
     ack_out = ack_1 && ack_2 && ack_3;
 
-    c_element c_req_1(
-      a.(req_in),
-      b.(ctl[0]),
-      c.(req_out_1)
-      );
-
-    c_element c_req_2(
-      a.(req_in),
-      b.(ctl[1]),
-      c.(req_out_2)
-      );
-
-    c_element c_req_3(
-      a.(req_in),
-      b.(ctl[2]),
-      c.(req_out_3)
-      );
   end
 
 endmodule
