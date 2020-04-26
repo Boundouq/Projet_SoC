@@ -4,8 +4,9 @@ input b,
 output reg c
 );
 
+reg s;
+assign s = c;
 always @ ( * ) begin
-  if (a == 1'b0 && b == 1'b0)  c = 1'b0;
-  else if (a == 1'b1 && b == 1'b1)  c = 1'b1;
+  c = (a && b) | (s && (a | b));
 end
 endmodule

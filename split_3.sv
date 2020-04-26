@@ -40,7 +40,7 @@ module split_3(
     .b(ctl[2]),
     .c(req_out_3)
     );
-    
+
   always @ ( * ) begin
     case (opcode)
       `B_type , `J_type:

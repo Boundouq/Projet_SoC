@@ -27,7 +27,7 @@ module asyn_controller(
   reg ack_g_in;
 
   reg req_e_out;
-  reg req_e;
+  //reg req_e;
   reg ack_e_in;
 
   reg ack_br_in;
@@ -50,6 +50,11 @@ module asyn_controller(
 
   reg req_gp;
   reg req_r;
+
+  reg req_ls_2;
+  reg ack_ls_in_2;
+  reg req_gp_2;
+  reg ack_gp_in_2;
 
   /*always @ ( posedge set ) begin
     if(!reset) begin
@@ -83,18 +88,18 @@ module asyn_controller(
 */
   always @ ( * ) begin
 
-      req1 = req_f_out;
+      req1   = req_f_out;
       req2_1 = req_d_out;
       req2_2 = req_g_out;
-      req3 = req_ls;
-      req4 = req_gp;
+      req3   = req_ls_2;
+      req4   = req_gp_2;
   end
 
   initial begin
   ack_f_in = 0;
 
   req_f_in = 1;
-  req_f_out = 1;
+  req_f_out = 0;
   //req_f = 0;
   req_d_out = 0;
   req_g_out = 0;
@@ -103,49 +108,59 @@ module asyn_controller(
   //req_e_out = 0;
   //req_e = 0;
   //req_br_out = 0;
-  //req_ls_out = 0;
+  ///req_ls_out = 0;
   //req_alu_out = 0;
-  req_ls = 0;
+  ///req_ls = 0;
   //req_s_out = 0;
   //req_l_out = 0;
-  //req_l = 0;
+  req_l = 1;
   //req_gp_out = 0;
-  req_gp = 0;
-  //req_r = 0;
+  //req_gp = 0;
+  req_r = 1;
+  req_ls_2 = 0;
+  req_gp_2 = 0;
   end
-  always @ ( * ) begin
+  always @ (req_f_in) begin
     #50 req_r = req_f_in;
+    //ack_f_out = req_f_in;
   end
-  always @ ( * ) begin
+  always @ ( req_f_out ) begin
     #50 req_f = req_f_out;
+    //ack_f_in = req_f_out;
     end
-  always @ ( * ) begin
+  always @ ( req_d_out ) begin
 
     if (req_d_out)begin
     #30 req_d = req_d_out; req_g = req_g_out;
+    //ack_d_in = req_d_out; ack_g_in = req_g_out;
     end
     else begin
     req_d = 0; req_g = 0;
     end
   end
-  always @ ( * ) begin
+  always @ ( req_ls_out ) begin
     #20 req_ls = req_ls_out;
+    //ack_ls_in = req_ls_out;
   end
-  always @ ( * ) begin
+  always @ ( req_l_out ) begin
   if(req_l_out)
     #30 req_l = req_l_out;
+    //ack_l_in = req_l_out;
   end
-  always @ ( * ) begin
+  always @ ( req_gp_out ) begin
     #20 req_gp = req_gp_out;
+    //ack_gp_in =req_gp_out;
   end
 
 
-  c_element fetch(
-    .a(req_r),
-    .b(!ack_f_in),
-    .c(req_f_out)
+  ctl_fetch fetch (
+    .req_i(req_r),
+    .ack_o(ack_f_in),
+
+    .req_o(req_f_out),
+    .ack_i(ack_f_out)
     );
-  assign ack_f_out = req_f_out;
+
 
   f DEC_GPR_f(
     .S1_ack(ack_d_in),
@@ -170,7 +185,7 @@ module asyn_controller(
   split_3 split_3(
     .opcode(opcode),
     .ack_1(ack_br_in),
-    .ack_2(ack_ls_in),
+    .ack_2(ack_ls_in_2),
     .ack_3(ack_alu_in),
     .req_in(req_e_out),
 
@@ -180,11 +195,20 @@ module asyn_controller(
     .req_out_3(req_alu_out)
   );
 
+
+  ctl_fetch mem (
+    .req_i(req_ls),
+    .ack_o(ack_ls_in),
+
+    .req_o(req_ls_2),
+    .ack_i(ack_ls_in_2)
+    );
+
   split_2_S_L split_2(
     .opcode(opcode),
     .ack_1(ack_s_in),
     .ack_2(ack_l_in),
-    .req_in(req_ls),
+    .req_in(req_ls_2),
 
     .ack_out(ack_ls_in),
     .req_out_1(req_s_out),
@@ -195,18 +219,26 @@ module asyn_controller(
     .opcode(opcode),
     .req_1(req_l),
     .req_2(req_alu_out),
-    .ack_in(ack_gp_in),
+    .ack_in(ack_gp_in_2),
 
     .req_out(req_gp_out),
     .ack_out_1(ack_l_in),
     .ack_out_2(ack_alu_in)
   );
 
+  ctl_fetch gpr (
+    .req_i(req_gp_2),
+    .ack_o(ack_gp_in),
+
+    .req_o(req_gp_2),
+    .ack_i(ack_gp_in_2)
+    );
+
   merge_3 merge_3(
     .opcode(opcode),
     .req_1(req_br_out),
     .req_2(req_s_out),
-    .req_3(req_gp),
+    .req_3(req_gp_2),
     .ack_in(ack_f_out),
 
     .req_out(req_f_in),
