@@ -10,13 +10,23 @@ output reg E2_ack
 
 );
 
+timeunit  1ns;
+timeprecision 1ns;
+reg S;
 c_element c (
   .a(E1_req),
   .b(E2_req),
-  .c(S_req)
+  .c(S)
   );
 
+  initial begin
+  S_req = S;
 
+  end
+  always @ ( * ) begin
+  #30
+  S_req = S;
+  end
 
 always @ ( * ) begin
   E1_ack = S_ack;

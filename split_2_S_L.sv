@@ -12,7 +12,9 @@ module split_2_S_L(
   output reg req_out_2
 
 );
-
+  timeunit  1ns;
+  timeprecision 1ns;
+  reg req2;
   reg [1:0] ctl;
 
   c_element c_req_1(
@@ -24,20 +26,29 @@ module split_2_S_L(
   c_element c_req_2(
     .a(req_in),
     .b(ctl[1]),
-    .c(req_out_2)
+    .c(req2)
     );
+    /*initial begin
+    req_out_2 = req2;
+    end*/
+    always @ ( * ) begin
+      #30
+      req_out_2 = req2;
+    end
 
-  always @ ( * ) begin
-    case (opcode)
-      `I_type_ld:
-              ctl = 2'b10;
+    always @ ( * ) begin
+      case (opcode)
       `S_type:
-              ctl = 2'b01;
-      default:ctl = 3'bx;
-    endcase
+          if (req_in)  ctl = 2'b01;
+          else        ctl = 2'b00;
+        `I_type_ld:
+          if (req_in)  ctl = 2'b10;
+          else        ctl = 2'b00;
+        default:ctl = 2'bx;
+      endcase
 
-    ack_out = ack_1 && ack_2;
+      ack_out = ack_1 && ack_2;
 
-  end
+    end
 
 endmodule

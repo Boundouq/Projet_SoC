@@ -12,7 +12,8 @@ module merge_2_L_ALU(
   output reg ack_out_2
 
 );
-
+timeunit  1ns;
+timeprecision 1ns;
   reg [1:0] ctl;
   reg a,b;
 
@@ -25,11 +26,21 @@ module merge_2_L_ALU(
       `I_type_ld:
               ctl = 2'b01;
       `R_type:
-              ctl = 3'b10;
-      default:ctl = 3'bx;
+              ctl = 2'b10;
+      default:ctl = 2'bx;
     endcase
 
+  end
+
+  always @ ( * ) begin
+    #20
     req_out = a | b;
+  end
+
+  initial begin
+  #50
+    forever
+      #100 ack_out_1 = !ack_out_1;
   end
 
   c_element c_req_1(

@@ -20,7 +20,9 @@ module split_3(
   output reg req_out_3
 
 );
-
+  timeunit  1ns;
+  timeprecision 1ns;
+  reg req2;
   reg [2:0] ctl;
 
   c_element c_req_1(
@@ -32,7 +34,7 @@ module split_3(
   c_element c_req_2(
     .a(req_in),
     .b(ctl[1]),
-    .c(req_out_2)
+    .c(req2)
     );
 
   c_element c_req_3(
@@ -40,13 +42,19 @@ module split_3(
     .b(ctl[2]),
     .c(req_out_3)
     );
+  always @ ( * ) begin
+    #20
+    req_out_2 = req2;
+  end
 
   always @ ( * ) begin
+    ctl = 3'b0;
     case (opcode)
       `B_type , `J_type:
               ctl = 3'b001;
       `I_type_ld , `S_type:
-              ctl = 3'b010;
+      if (req_in)  ctl = 3'b010;
+      else        ctl = 3'b000;
       `R_type , `NOP_type , `I_type_op:
               ctl = 3'b100;
       default:ctl = 3'bx;

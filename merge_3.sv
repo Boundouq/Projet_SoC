@@ -20,7 +20,8 @@ module merge_3(
   output reg ack_out_3
 
 );
-
+timeunit  1ns;
+timeprecision 1ns;
   reg [2:0] ctl;
   reg a,b,c;
   initial begin
@@ -40,10 +41,14 @@ module merge_3(
       default:ctl = 3'bx;
     endcase
 
-
+  end
+  always @ ( * ) begin
     req_out = a | b | c;
   end
 
+initial forever begin
+    #100 ack_out_3 = !ack_out_3;
+  end
       c_element c_req_1(
         .a(req_1),
         .b(ctl[0]),
