@@ -23,6 +23,7 @@ module split_3(
   timeunit  1ns;
   timeprecision 1ns;
   reg req2;
+  reg req3;
   reg [2:0] ctl;
 
   c_element c_req_1(
@@ -40,7 +41,7 @@ module split_3(
   c_element c_req_3(
     .a(req_in),
     .b(ctl[2]),
-    .c(req_out_3)
+    .c(req3)
     );
   always @ ( * ) begin
     #20

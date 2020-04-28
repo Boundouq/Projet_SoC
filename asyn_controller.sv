@@ -56,15 +56,21 @@ module asyn_controller(
   reg ack_l_in_r;
   reg ack_gp_in_2_r;
 
+  reg ack_alu;
+  reg req_alu;
+
   always @ ( posedge set ) begin
     if(!reset) begin
       ack_f_out = 1;
       ack_br_in = 0;
-      ack_s_in = 0;
-      ack_alu_in = 1;
+      ack_s_in = 1;
+      ack_alu_in = 0;
       ack_e_in = 1;
       ack_ls_in_2 = 0;
       ack_l_in = 0;
+      ack_alu = 0;
+
+
 
       req_f_in = 0;
       req_f_out = 1;
@@ -76,6 +82,7 @@ module asyn_controller(
       req_gp_2 = 0;
       req_gp_out = 1;
       req_ls_out = 0;
+      req_alu_out = 1;
     end
     else begin
       ack_f_out = 1'bx;
@@ -218,6 +225,14 @@ module asyn_controller(
     .ack_i(ack_ls_in_2)
     );
 
+  ctl_trs trs (
+    .req_i(req_alu_out),
+    .ack_o(ack_alu),
+
+    .req_o(req_alu),
+    .ack_i(ack_alu_in)
+    );
+
   split_2_S_L split_2(
     .opcode(opcode),
     .ack_1(ack_s_in),
@@ -232,13 +247,14 @@ module asyn_controller(
   merge_2_L_ALU merge_2(
     .opcode(opcode),
     .req_1(req_ls_out),
-    .req_2(req_alu_out),
+    .req_2(req_alu),
     .ack_in(ack_gp_in_2),
 
     .req_out(req_gp_out),
     .ack_out_1(ack_l_in),
-    .ack_out_2(ack_alu_in)
+    .ack_out_2(ack_alu)
   );
+
 
   ctl_gpr gpr (
     .req_i(req_gp_out),

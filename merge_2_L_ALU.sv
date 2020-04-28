@@ -43,6 +43,12 @@ timeprecision 1ns;
       #100 ack_out_1 = !ack_out_1;
   end
 
+  initial begin
+  #50
+    forever
+      #100 ack_out_2 = !ack_out_2;
+  end
+
   c_element c_req_1(
     .a(req_1),
     .b(ctl[0]),

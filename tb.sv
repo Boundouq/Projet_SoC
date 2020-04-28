@@ -27,8 +27,11 @@ asyn_controller asyn(
     $timeformat(-9, 1, "ns", 12);
 
     //#100 {reset,set,opcode} = 9'b1_0_0000011; $display("HELLO");
-    #50{reset,set,opcode} = 9'b1_0_0000011; $display("HELLO");
-    #50{reset,set,opcode} = 9'b0_1_0000011; $display("HELLO");
+    #50{reset,set,opcode} = 9'b1_0_1100011; $display("HELLO");
+    #50{reset,set,opcode} = 9'b0_1_0110011; $display("HELLO");
+
+
+
 
 
 

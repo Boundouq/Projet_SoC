@@ -46,9 +46,10 @@ timeprecision 1ns;
     req_out = a | b | c;
   end
 
-initial forever begin
+  initial forever begin
     #100 ack_out_3 = !ack_out_3;
   end
+
       c_element c_req_1(
         .a(req_1),
         .b(ctl[0]),
@@ -73,11 +74,14 @@ initial forever begin
         .c(ack_out_1)
         );
 
-      c_element c_ack_2(
+      /*c_element c_ack_2(
         .a(ack_in),
         .b(!b),
         .c(ack_out_2)
-        );
+        );*/
+        always @ ( * ) begin
+          ack_out_2 = 1'b1;
+        end
 
       c_element c_ack_3(
         .a(ack_in),
