@@ -1,5 +1,6 @@
 `define R_type 7'b0110011
 `define I_type_ld 7'b0000011  //I_type load
+`define S_type 7'b0100011
 
 module merge_2_L_ALU(
   input [6:0] opcode,
@@ -15,7 +16,7 @@ module merge_2_L_ALU(
 timeunit  1ns;
 timeprecision 1ns;
   reg [1:0] ctl;
-  reg a,b;
+  reg a,b,c;
 
   initial begin
     a = 0;
@@ -23,15 +24,23 @@ timeprecision 1ns;
   end
   always @ ( * ) begin
     case (opcode)
-      `I_type_ld:
+      `I_type_ld, `S_type:
               ctl = 2'b01;
       `R_type:
               ctl = 2'b10;
+
       default:ctl = 2'bx;
     endcase
 
   end
-
+  always @ ( * ) begin
+  if (b == 0 || b == 1) begin
+    c = b;
+  end
+  else begin
+    c = 1;
+  end
+  end
   always @ ( * ) begin
     #20
     req_out = a | b;
@@ -69,7 +78,7 @@ timeprecision 1ns;
 
   c_element c_ack_2(
     .a(ack_in),
-    .b(!b),
+    .b(!c),
     .c(ack_out_2)
     );
 endmodule

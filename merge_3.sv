@@ -23,7 +23,7 @@ module merge_3(
 timeunit  1ns;
 timeprecision 1ns;
   reg [2:0] ctl;
-  reg a,b,c;
+  reg a,b,c,d;
   initial begin
     a = 0;
     b = 0;
@@ -44,10 +44,20 @@ timeprecision 1ns;
   end
   always @ ( * ) begin
     req_out = a | b | c;
+    if (c == 0 || c == 1) begin
+      d = c;
+    end
+    else begin
+      d = 1;
+    end
   end
 
   initial forever begin
     #100 ack_out_3 = !ack_out_3;
+  end
+
+  initial forever begin
+    #100 ack_out_1 = !ack_out_1;
   end
 
       c_element c_req_1(
@@ -85,7 +95,7 @@ timeprecision 1ns;
 
       c_element c_ack_3(
         .a(ack_in),
-        .b(!c),
+        .b(!d),
         .c(ack_out_3)
         );
 

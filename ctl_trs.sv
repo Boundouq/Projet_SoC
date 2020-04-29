@@ -21,16 +21,17 @@ module ctl_trs (
     b = req_i | (!ack_o);
     c = s && b;
     d = a | c;
-
+    req_o = d;
 
   end
   always @ ( * ) begin
-  #50
-  //if (req_i)      ack_i <= 1;
-  if (ack_o)      req_o <= 0;
-  //if (!req_i)      ack_i <= 0;
-  req_o = d;
-  ack_i = d;
+    #50
+    //if (req_i)      ack_i <= 1;
+    if (ack_o)      req_o <= 0;
+    //if (!req_i)      ack_i <= 0;
+    req_o = d;
+
 
   end
+
 endmodule

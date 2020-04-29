@@ -5,24 +5,30 @@ timeprecision 1ns;
 
 bit req = 1'b0;
 bit reset = 1'b1;
+bit set = 1'b0;
 
 logic [31:0] instr_in,instr_out, rd, rs1, rs2, imm, pc, pc_out, instr_addr_out,branch_pc_out,lsu_out;
 logic [2:0] funct3;
-logic [6:0] funct7,opcode;
-logic [4:0] rd_in,rd_out;
+logic [6:0] funct7,opcode, opcode_out;
+logic [4:0] rd_in,rd_out,rs1_n,rs2_n;
 logic br, rs_read, rd_write_in,valid_out,alu_sub_sra_out,rd_write_out,stall_in,alu_non_zero_out,instr_req_out, instr_rvalid_in, gnt_in;
-logic req_0, req_1, req_2,req_3;
+logic req_1, req_2_1, req_2_2, req_3, req_4;
 logic branch_pc_src_out, branch_out, branch_in;
 logic [3:0] branch_op_out;
 logic execute_branch_predicted_taken;
 
-/*ctrl ctrl(
-  .reset(reset),
+  asyn_controller controller(
+    .set(set),
+    .reset(reset),
+    .opcode(opcode_out),
 
-  .req
-  );
+    .req1(req_1),
+    .req2_1(req_2_1),
+    .req2_2(req_2_2),
+    .req3(req_3),
+    .req4(req_4)
+    );
 
-*/
 // read_file
   integer file;
   reg [31:0] inst_mem [8000:0];
@@ -52,7 +58,7 @@ instr_ram instr(
   );
 
 fetch fetch(
-  .req(req),
+  .req(req_1),
   .reset(reset),
 
   .instr_rvalid_in(instr_rvalid_in),
@@ -67,20 +73,20 @@ fetch fetch(
   .instr_addr_out(instr_addr_out),
   .instr_read_out(rs_read),
   .instr_out(instr_out),
-  .pc_out(pc)
+  .pc_out(pc),
+  .opc(opcode_out)
   );
 
-
-
-
 decode deco(
-  .req(req),
+  .req_1(req_2_1),
+  //.req_2(req_2_2),
+
   .reset(reset),
   .rs_read(!rs_read),
-  .rd_in(rd_in),
-  .rd_write_in(rd_write_in),
+  //.rd_in(rd_in),
+  //.rd_write_in(1),
   .instr_in(instr_out),
-  .rd_value_in(rd),
+  //.rd_value_in(rd),
 
   .pc_in_dec(pc),
   .pc_out_dec(pc_out),
@@ -92,14 +98,30 @@ decode deco(
   .alu_sub_sra_out(alu_sub_sra_out),
   .rd_out(rd_out),
   .rd_write_out(rd_write_out),
-  .rs1_value_out(rs1),           //needed in ALU
-  .rs2_value_out(rs2),          //needed in ALU
-  .imm_value_out(imm)          //needed in ALU
+  //.rs1_value_out(rs1),           //needed in ALU
+  //.rs2_value_out(rs2),          //needed in ALU
+  .imm_value_out(imm),          //needed in ALU
+  .rs1(rs1_n),
+  .rs2(rs2_n)
   );
 
+  regs regs (
+      .req_r(req_2_2),
+      .req_w(req_4),
+      .rs_read(!rs_read),
+      .rs1_in(rs1_n),
+      .rs2_in(rs2_n),
+      .rd_in(rd_in),
+      .rd_write_in(rd_write_in),
+
+      .rd_value_in(rd),
+
+      .rs1_value_out(rs1),
+      .rs2_value_out(rs2)
+  );
 
 execute exec (
-  .req(req),
+  //.req(req),
 
   .stall_in(valid_out),
 
@@ -195,7 +217,8 @@ execute exec (
   end*/
 
   initial begin
-  #25 {reset} = 1'b0; $display("HELLO");
+  #50 {reset,set} = 2'b0_0; $display("HELLO");
+  #50 {reset,set} = 2'b0_1; $display("HELLO");
    @(posedge req)
       @(posedge req) $display ("HELLO");
 

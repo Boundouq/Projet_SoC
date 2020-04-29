@@ -2,7 +2,8 @@
 `define REGS
 
 module regs(
-  input req,
+  input req_r,
+  input req_w,
   input rs_read,
 
   input [4:0] rs1_in,
@@ -25,15 +26,17 @@ module regs(
       end
   endgenerate
 
-  always @(posedge req)
+  always @(posedge req_r)
   begin
       if (!rs_read) begin
           rs1_value_out <= regs[rs1_in];
           rs2_value_out <= regs[rs2_in];
       end
 
-      if (!rd_write_in)
-          regs[rd_in] <= rd_value_in;
+  end
+  always @ ( posedge req_w ) begin
+  if (!rd_write_in)
+      regs[rd_in] <= rd_value_in;
   end
 endmodule
 

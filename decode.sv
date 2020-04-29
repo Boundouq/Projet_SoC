@@ -11,13 +11,14 @@
 
 module decode (
 
-   input req,
+   input req_1,
+   //input req_2,
    input reset,
    input rs_read,
 
-   input [4:0] rd_in,
-   input rd_write_in,
-   input [31:0] rd_value_in,
+   //input [4:0] rd_in,
+   //input rd_write_in,
+   //input [31:0] rd_value_in,
 
    input [31:0] instr_in,
 
@@ -33,14 +34,19 @@ module decode (
    output reg rd_write_out,
 
 
-   output reg [31:0] rs1_value_out,           //needed in ALU
-   output reg [31:0] rs2_value_out,          //needed in ALU
-   output reg [31:0] imm_value_out          //needed in ALU
+   //output reg [31:0] rs1_value_out,           //needed in ALU
+   //output reg [31:0] rs2_value_out,          //needed in ALU
+   output reg [31:0] imm_value_out,          //needed in ALU
+
+   output reg [4:0] rs1,
+   output reg [4:0] rs2,
+   output reg [4:0] rd
+
 );
 
-    logic [4:0] rs2; //wire??
-    wire [4:0] rs1;
-    wire [4:0] rd;
+    //logic [4:0] rs2; //wire??
+    //wire [4:0] rs1;
+    //wire [4:0] rd;
 
     logic [2:0] funct3;
     wire [6:0] funct7;
@@ -62,8 +68,8 @@ module decode (
     reg [31:0] rs1_v_out;
     reg [31:0] rs2_v_out;
 
-    regs regs (
-        .req(req),
+  /*  regs regs (
+        .req(req_2),
         .rs_read(rs_read),
         .rs1_in(rs1),
         .rs2_in(rs2),
@@ -75,7 +81,7 @@ module decode (
         .rs1_value_out(rs1_v_out),
         .rs2_value_out(rs2_v_out)
     );
-
+*/
     reg valid;
     wire rs1_read;
     wire rs2_read;
@@ -130,15 +136,15 @@ module decode (
         .imm_value_out(imm_value)
     );
 
-    always @ ( * ) begin
+    /*always @ ( * ) begin
     rs1_value_out = rs1_v_out;
     rs2_value_out = rs2_v_out;
 
-    end
+    end*/
 
 
 
-    always_ff @(posedge req) begin
+    always_ff @(posedge req_1) begin
         if (!rs_read) begin
 
             pc_out_dec <= pc_in_dec;

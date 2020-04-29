@@ -43,7 +43,6 @@ module asyn_controller(
   reg ack_l_in;
   reg req_s_out;
   reg req_l_out;
-  reg req_l;
 
   reg ack_gp_in;
   reg req_gp_out;
@@ -59,18 +58,23 @@ module asyn_controller(
   reg ack_alu;
   reg req_alu;
 
+  reg ack_br;
+  reg req_br;
+  reg ack_br_2;
+  reg req_br_2;
+
   always @ ( posedge set ) begin
     if(!reset) begin
       ack_f_out = 1;
       ack_br_in = 0;
+      ack_br = 0;
       ack_s_in = 1;
       ack_alu_in = 0;
-      ack_e_in = 1;
+      //ack_e_in = 1;
       ack_ls_in_2 = 0;
       ack_l_in = 0;
       ack_alu = 0;
-
-
+      ack_e_in = 0;
 
       req_f_in = 0;
       req_f_out = 1;
@@ -82,11 +86,16 @@ module asyn_controller(
       req_gp_2 = 0;
       req_gp_out = 1;
       req_ls_out = 0;
-      req_alu_out = 1;
+      //req_alu_out = 1;
+
+      req_alu = 1'b0;
+      req_br = 0;
+      req_br_2 = 0;
+
     end
     else begin
       ack_f_out = 1'bx;
-      ack_br_in = 1'bx;
+      ack_br = 1'bx;
       ack_s_in = 1'bx;
       ack_alu_in = 1'bx;
       ack_e_in = 1'bx;
@@ -101,6 +110,8 @@ module asyn_controller(
       req_ls_2 = 1'bx;
       req_gp_2 = 1'bx;
       req_ls_out = 1'bx;
+
+      req_alu = 1'bx;
     end
   end
 
@@ -108,7 +119,7 @@ module asyn_controller(
     if(!set) begin
       ack_f_in = 1'bx;
       ack_f_out = 1'bx;
-      ack_br_in = 1'bx;
+      ack_br = 1'bx;
       ack_s_in = 1'bx;
       ack_alu_in = 1'bx;
       ack_e_in = 1'bx;
@@ -123,6 +134,9 @@ module asyn_controller(
       req_ls_2 = 1'bx;
       req_gp_2 = 1'bx;
       req_ls_out = 1'bx;
+
+      req_alu = 1'bx;
+
     end
   end
 
@@ -233,6 +247,21 @@ module asyn_controller(
     .ack_i(ack_alu_in)
     );
 
+  ctl_br trs_br (
+    .req_i(req_br_out),
+    .ack_o(ack_br),
+
+    .req_o(req_br),
+    .ack_i(ack_br_in)
+    );
+  ctl_gpr trs_br_2 (
+    .req_i(req_br),
+    .ack_o(ack_br_2),
+
+    .req_o(req_br_2),
+    .ack_i(ack_br)
+    );
+
   split_2_S_L split_2(
     .opcode(opcode),
     .ack_1(ack_s_in),
@@ -272,7 +301,7 @@ module asyn_controller(
     .ack_in(ack_f_out),
 
     .req_out(req_f_in),
-    .ack_out_1(ack_br_in),
+    .ack_out_1(ack_br_2),
     .ack_out_2(ack_s_in),
     .ack_out_3(ack_gp_in)
   );

@@ -1,4 +1,4 @@
-module ctl_mem (
+module ctl_br (
   input req_i,
   input ack_o,
 
@@ -21,16 +21,17 @@ module ctl_mem (
     b = req_i | (!ack_o);
     c = s && b;
     d = a | c;
+  end
+  always @ ( * ) begin
+    #50
+    //if (req_i)      ack_i <= 1;
+    if (ack_o)      req_o <= 0;
+    //if (!req_i)      ack_i <= 0;
+    req_o = d;
+  end
+  always @ ( posedge req_i) begin
     req_o = d;
 
   end
-  always @ ( * ) begin
-  #50
-  //if (req_i)      ack_i <= 1;
-  if (ack_o)      req_o <= 0;
-  //if (!req_i)      ack_i <= 0;
-  req_o = d;
 
-
-  end
 endmodule

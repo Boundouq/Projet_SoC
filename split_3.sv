@@ -24,12 +24,13 @@ module split_3(
   timeprecision 1ns;
   reg req2;
   reg req3;
+  reg req1;
   reg [2:0] ctl;
 
   c_element c_req_1(
     .a(req_in),
     .b(ctl[0]),
-    .c(req_out_1)
+    .c(req1)
     );
 
   c_element c_req_2(
@@ -46,22 +47,34 @@ module split_3(
   always @ ( * ) begin
     #20
     req_out_2 = req2;
+    req_out_1 = req1;
   end
+always @ (*) begin
+  #20 req_out_3 = req3;
+end
 
   always @ ( * ) begin
     ctl = 3'b0;
     case (opcode)
-      `B_type , `J_type:
-              ctl = 3'b001;
-      `I_type_ld , `S_type:
-      if (req_in)  ctl = 3'b010;
+      `B_type , `J_type:  begin
+      ack_out = ack_1;
+      if (req_in)  ctl = 3'b001;
       else        ctl = 3'b000;
-      `R_type , `NOP_type , `I_type_op:
-              ctl = 3'b100;
+      end
+      `I_type_ld , `S_type: begin
+        ack_out = ack_2;
+        if (req_in)  ctl = 3'b010;
+        else        ctl = 3'b000;
+      end
+      `R_type , `NOP_type , `I_type_op: begin
+        ack_out = ack_3;
+        if (req_in)  ctl = 3'b100;
+        else        ctl = 3'b000;
+      end
       default:ctl = 3'bx;
     endcase
 
-    ack_out = ack_1 && ack_2 && ack_3;
+    //ack_out = ack_1 && ack_2 && ack_3;
 
   end
 
