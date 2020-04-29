@@ -87,10 +87,15 @@ module execute(
 
     always @ ( * ) begin
       if(!stall_in) begin
-        rd_write = 1'b0;
-        result_out = alu_result;
-        rd_out = rd_in;
-        alu_non_zero_out = alu_non_zero;
+        if (branch_mispredicted_out == 1)begin
+          rd_write = 1'b1;
+        end
+        else begin
+          rd_write = 1'b0;
+          result_out = alu_result;
+          rd_out = rd_in;
+          alu_non_zero_out = alu_non_zero;
+        end
       end
       if (alu_opcode_in == `I_type_ld || alu_opcode_in == `S_type)
         lsu_out = alu_result;

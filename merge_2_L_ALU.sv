@@ -1,6 +1,9 @@
 `define R_type 7'b0110011
 `define I_type_ld 7'b0000011  //I_type load
+`define I_type_op 7'b0010011  //I_type operation
 `define S_type 7'b0100011
+`define NOP_type 7'b0000000
+
 
 module merge_2_L_ALU(
   input [6:0] opcode,
@@ -26,7 +29,7 @@ timeprecision 1ns;
     case (opcode)
       `I_type_ld, `S_type:
               ctl = 2'b01;
-      `R_type:
+      `R_type, `I_type_op,`NOP_type:
               ctl = 2'b10;
 
       default:ctl = 2'bx;

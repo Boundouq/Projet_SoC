@@ -51,6 +51,7 @@ module decode (
     logic [2:0] funct3;
     wire [6:0] funct7;
     always @ ( * ) begin
+      rs2 = 32'b0;
       if (instr_in[6:0] == `R_type ||instr_in[6:0] == `S_type || instr_in[6:0] == `B_type) rs2 = instr_in[24:20];
     end
     assign rs1 = instr_in[19:15];
