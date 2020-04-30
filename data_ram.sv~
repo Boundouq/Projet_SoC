@@ -37,7 +37,7 @@ module data_ram (
       rd_out_data <= rd_in_data;
       
       if (data_req_in) begin
-        data_gnt_o = 1;
+        data_gnt_o <= 1;
         if (!data_we_in) begin
           data_rdata_o = {mem[add][7:0], mem[add][15:8], mem[add][23:16], mem[add][31:24]};
           data_rvalid = 1'b1;

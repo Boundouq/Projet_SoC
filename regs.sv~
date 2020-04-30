@@ -21,9 +21,8 @@ module regs(
   generate
       genvar i;
       for (i = 0; i < 32; i = i+1) begin
-          initial begin
+          initial
               regs[i] <= 0;
-		end
       end
   endgenerate
 
