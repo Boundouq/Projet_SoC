@@ -10,8 +10,8 @@ module data_ram (
     input [3:0] data_be_in,//
     input [31:0] data_wdata_in,//
     input data_req_in,
-    input reg [4:0] rd_in_data,//
-    output  reg [4:0] rd_out_data,//
+    input [4:0] rd_in_data,//
+    output reg [4:0] rd_out_data,//
 
     output reg data_gnt_o,
     output reg data_rvalid,//
@@ -35,7 +35,7 @@ module data_ram (
       data_gnt_o = 0;
       data_rdata_o = 32'bx;
       rd_out_data <= rd_in_data;
-      
+
       if (data_req_in) begin
         data_gnt_o = 1;
         if (!data_we_in) begin

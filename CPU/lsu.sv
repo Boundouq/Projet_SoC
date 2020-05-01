@@ -4,8 +4,8 @@
 module lsu(
   input [6:0] opcode_in,//
   input [2:0] funct3,
-  input reg [4:0] rd_in_lsu,//
-  input reg [4:0] rd_in_data,//
+  input [4:0] rd_in_lsu,//
+  input [4:0] rd_in_data,//
 
   input mem_valid,//
 
