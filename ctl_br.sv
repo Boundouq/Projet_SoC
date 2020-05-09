@@ -25,7 +25,7 @@ module ctl_br (
   always @ ( * ) begin
     #50
     //if (req_i)      ack_i <= 1;
-    if (ack_o)      req_o = 0;
+    if (ack_o)      req_o <= 0;
     //if (!req_i)      ack_i <= 0;
     req_o = d;
   end

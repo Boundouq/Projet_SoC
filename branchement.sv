@@ -6,7 +6,7 @@ module branch_pc (
 
     input [6:0] opcode,
     input [31:0] pc_in,
-    input funct3,
+    input [2:0] funct3,
     input [31:0] rs1_value_in,
     input [31:0] rs2_value_in,
     input [31:0] imm_value_in,
@@ -26,12 +26,12 @@ module branch_pc (
       else imm = imm_value_in;
       if (opcode == 7'b1100011) begin
         case(funct3)
-          000: branch = (rs1_value_in == rs2_value_in) ? 1 : 0;      //beq
-          001: branch = (rs1_value_in != rs2_value_in) ? 1 : 0;      //bne
-          100: branch = (rs1_value_in < rs2_value_in) ? 1 : 0;       //blt
-          101: branch = (rs1_value_in >= rs2_value_in) ? 1 : 0;      //bge
-          110: branch = (rs1_value_in < rs2_value_in) ? 1 : 0;       //bltu
-          111: branch = (rs1_value_in >= rs2_value_in) ? 1 : 0;      //bgeu
+          3'b000: branch = (rs1_value_in == rs2_value_in) ? 1 : 0;      //beq
+          3'b001: branch = (rs1_value_in != rs2_value_in) ? 1 : 0;      //bne
+          3'b100: branch = (rs1_value_in < rs2_value_in) ? 1 : 0;       //blt
+          3'b101: branch = (rs1_value_in >= rs2_value_in) ? 1 : 0;      //bge
+          3'b110: branch = (rs1_value_in < rs2_value_in) ? 1 : 0;       //bltu
+          3'b111: branch = (rs1_value_in >= rs2_value_in) ? 1 : 0;      //bgeu
           default:       branch = 0;
         endcase
       end

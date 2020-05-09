@@ -35,11 +35,15 @@ always @ (*) begin
 
   if (!reset) begin
     instr_addr_out = pc;
-    instr_req_out = 1;
   end
 
   else if (!gnt_in) begin
     instr_addr_out = 32'bx;
+  end
+  if (!reset) begin
+    instr_req_out = 1;
+  end
+  else if (!gnt_in) begin
     instr_req_out = 0;
   end
 
